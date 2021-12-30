@@ -1,0 +1,32 @@
+{
+	"name": "Node.js",
+
+	// docker source setting
+	// 1. set image
+	"image":"node:12.22.3",
+	
+	// 2. use docker file
+	// "build": {
+	// 	"dockerfile": "Dockerfile"
+	// },
+
+	//3. docker-compose
+	// "dockerComposeFile": "docker-compose.yml",
+	// "service": "node.js",
+	// "workspaceFolder": "/usr/src/app",
+
+	//container 相關設定
+	// "forwardPorts": [],
+	// "postCreateCommand": "yarn install",
+	"remoteUser": "node",
+
+	//VS Code setting
+	"settings": {},
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"octref.vetur",
+		"ritwickdey.liveserver",
+		"mhutchie.git-graph",
+		"eamodio.gitlens"
+	],
+}
