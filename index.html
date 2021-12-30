@@ -9,13 +9,13 @@
 </head>
 <body>
     <input type="file" id="chooseFile" accept=".txt">
-    <button id="import">Import</button>
+    <button id="import" onclick="selectFile()">Import</button>
     <button id="click">click</button>
     <section>
-        <div id="result">
-            <li></li>
-        </div>
+        <div id="result"> </div>
     </section>
+    <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download</a>
+    
     <script src="./script.js"></script>
 </body>
 </html>

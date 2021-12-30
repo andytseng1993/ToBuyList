@@ -13,9 +13,7 @@ function selectFile(){
         alert('Please choose a file :)')
     }
 }
-document.getElementById('import').addEventListener('click',function(){
-    selectFile()
-})
+
 
 
 document.getElementById('click').addEventListener('click',function(){
@@ -28,5 +26,17 @@ document.getElementById('click').addEventListener('click',function(){
         }
         console.log(data)
     }
+    data.active='123'
     
 })
+function saveFile(){
+    console.log(data)
+    if(Object.keys(data).length === 0 && data.constructor === Object){
+        alert('Empty')
+    }else{
+        let downloadBtn = document.getElementById('download')
+        let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data,null, 2))
+        downloadBtn.setAttribute('href','data:' + dataStr)
+    }
+    
+}
