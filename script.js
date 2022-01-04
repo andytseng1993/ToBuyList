@@ -1,18 +1,20 @@
-let data = {}
+let data = []
 
 function selectFile(){
-    let file = document.getElementById('chooseFile').files[0]
+    let file = document.getElementById('chooseFile')
     let reader = new FileReader()
-    if(file){
+    if(file.files[0]){
         reader.addEventListener('load',function(event){
             const result = JSON.parse(reader.result)
             console.log(result)
             data =result
+            localStorage.setItem('list',JSON.stringify(data))
         })
-        reader.readAsText(file)
+        reader.readAsText(file.files[0])
     }else{                                                                                                              
         alert('Please choose a file :)')
     }
+    file.value = ''
 }
 
 document.getElementById('click').addEventListener('click',function(){
@@ -43,7 +45,7 @@ function saveFile(){
 // Input List
 let form = document.getElementById('myForm')
 let msg =document.querySelector('.msg')
-let nameInput = document.getElementById('name')
+let customerName = document.getElementById('name')
 let companyInput = document.getElementById('company')
 let productInput = document.getElementById('product')
 let quantityInput= document.getElementById('quantity')
@@ -51,8 +53,8 @@ let quantityInput= document.getElementById('quantity')
 form.addEventListener('submit',function(event){
     event.preventDefault()
     try{
-        if(nameInput.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
-        else console.log('test')
+        if(customerName.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
+        else createList(customerName.value.trim(), companyInput.value.trim(),productInput.value.trim(),quantityInput.value)
     }catch(error){
         msg.classList.add('err')
         msg.textContent= error
@@ -63,3 +65,25 @@ form.addEventListener('submit',function(event){
         },2000)
     }
 })
+
+readList()
+function readList(){
+    data= JSON.parse(localStorage.getItem('list')||'[]')
+
+    }
+class ToBuyList{
+    constructor (customerName,companyInput,productInput,quantityInput){
+        this.customerName = customerName
+        this.company = companyInput
+        this.product = productInput
+        this.quantity = quantityInput
+    }
+}
+
+function createList (customerName, companyInput,productInput,quantityInput){
+    let storeItems = new ToBuyList(customerName,companyInput,productInput,quantityInput)
+    data.push(storeItems)
+    localStorage.setItem('list',JSON.stringify(data))
+}
+
+console.log(data)
