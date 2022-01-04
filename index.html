@@ -11,11 +11,43 @@
     <input type="file" id="chooseFile" accept=".txt">
     <button id="import" onclick="selectFile()">Import</button>
     <button id="click">click</button>
-    <section>
-        <div id="result"> </div>
-    </section>
     <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download</a>
-    
+    <section class="container">
+        <form id="myForm">
+            <h1>To Buy List</h1>
+            <div class="msg"></div>
+            <div>
+                <label for="name">Ordered Name: </label>
+                <input type="text" id="name" placeholder="Who ordered?">
+            </div>
+            <div>
+                <label for="company">Company: </label>
+                <input type="text" id="company" placeholder="COMPANY">
+            </div>
+            <div>
+                <label for="product">Product: </label>
+                <input type="text" id="product" placeholder="PRODUCT">
+            </div>
+            <div>
+                <label for="quantity">Quantity: </label>
+                <input type="number" id="quantity" placeholder="QTY" min="0" >
+            </div>
+            <input class="btn" type="submit" value="Submit">
+            <button type="button" id="clearAll">Clean All</button>
+        </form>
+        <ul id="users">
+            <!-- <li class="item">item1
+                <button class="delete">-</button>
+            </li>
+            <li class="item">item1
+                <button class="delete">-</button>
+            </li>
+            <li class="item">item1
+                <button class="delete">-</button>
+            </li> -->
+        </ul>
+    </section>
+
     <script src="./script.js"></script>
 </body>
 </html>

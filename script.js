@@ -1,4 +1,5 @@
 let data = {}
+
 function selectFile(){
     let file = document.getElementById('chooseFile').files[0]
     let reader = new FileReader()
@@ -9,12 +10,10 @@ function selectFile(){
             data =result
         })
         reader.readAsText(file)
-    }else{
+    }else{                                                                                                              
         alert('Please choose a file :)')
     }
 }
-
-
 
 document.getElementById('click').addEventListener('click',function(){
     if(data){
@@ -40,3 +39,27 @@ function saveFile(){
     }
     
 }
+
+// Input List
+let form = document.getElementById('myForm')
+let msg =document.querySelector('.msg')
+let nameInput = document.getElementById('name')
+let companyInput = document.getElementById('company')
+let productInput = document.getElementById('product')
+let quantityInput= document.getElementById('quantity')
+
+form.addEventListener('submit',function(event){
+    event.preventDefault()
+    try{
+        if(nameInput.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
+        else console.log('test')
+    }catch(error){
+        msg.classList.add('err')
+        msg.textContent= error
+    }finally{
+        setTimeout(()=>{
+            msg.textContent = ''
+            msg.className= 'msg'
+        },2000)
+    }
+})
