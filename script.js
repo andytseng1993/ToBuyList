@@ -49,6 +49,7 @@ let customerName = document.getElementById('name')
 let companyInput = document.getElementById('company')
 let productInput = document.getElementById('product')
 let quantityInput= document.getElementById('quantity')
+let result = document.getElementById('result')
 
 form.addEventListener('submit',function(event){
     event.preventDefault()
@@ -69,7 +70,7 @@ form.addEventListener('submit',function(event){
 readList()
 function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
-
+    addList()
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -84,6 +85,14 @@ function createList (customerName, companyInput,productInput,quantityInput){
     let storeItems = new ToBuyList(customerName,companyInput,productInput,quantityInput)
     data.push(storeItems)
     localStorage.setItem('list',JSON.stringify(data))
+    addList()
+}
+function addList(){
+    let list=''
+    for(let n =0; n<data.length;n++){
+        list+='<li class="item">'+data[n].customerName+`<button i=${n} class="delete">-</button></li>`
+    }
+    result.innerHTML = list
 }
 
 console.log(data)
