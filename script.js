@@ -1,3 +1,4 @@
+'use strict';
 let data = []
 
 function selectFile(){
@@ -17,19 +18,6 @@ function selectFile(){
     file.value = ''
 }
 
-document.getElementById('click').addEventListener('click',function(){
-    if(data){
-        for(let member of data.members){
-            console.log(member.name)
-            let name = `<li>${member.name}</li>`
-            let result=document.getElementById('result')
-            result.innerHTML += name
-        }
-        console.log(data)
-    }
-    data.active='123'
-    
-})
 function saveFile(){
     console.log(data)
     if(Object.keys(data).length === 0 && data.constructor === Object){
@@ -38,8 +26,7 @@ function saveFile(){
         let downloadBtn = document.getElementById('download')
         let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data))
         downloadBtn.setAttribute('href','data:' + dataStr)
-    }
-    
+    } 
 }
 
 // Input List
@@ -70,7 +57,9 @@ form.addEventListener('submit',function(event){
 readList()
 function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
-    addList()
+    let nameList = customerNameList()
+    totalList()
+    addNameList(nameList)
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -79,24 +68,26 @@ class ToBuyList{
         this.product = productInput
         this.quantity = quantityInput
     }
-    
 }
 
 function createList (customerName, companyInput,productInput,quantityInput){
     let storeItems = new ToBuyList(customerName,companyInput,productInput,quantityInput)
     data.push(storeItems)
     localStorage.setItem('list',JSON.stringify(data))
-    addList()
+    let nameList = customerNameList()
+    totalList()
+    addNameList(nameList)
 }
-function addList(){
-    let list=''
-    for(let n =0; n<data.length;n++){
-        list+='<li class="item">'+data[n].customerName+`<button i=${n} class="delete">-</button></li>`
-    }
-    result.innerHTML = list
+function addNameList(nameList){
+    console.log(nameList)
+    
+    // for(let n =0; n<data.length;n++){
+    //     list+='<li class="item">'+data[n].customerName+`<button i=${n} class="delete">-</button></li>`
+    // }
+    // result.innerHTML = list
 }
 
-function nameList(){
+function customerNameList(){
     let obj ={
         sort:[],
         map:{}
@@ -125,9 +116,9 @@ function nameList(){
             }
         }
     }
+    console.log(obj)
     return obj
 }
-nameList()
 
 function totalList(){
     let obj ={
@@ -144,22 +135,23 @@ function totalList(){
         }
         obj.sort.sort()
         let mapCompany = obj.map[list.company].map
+        let mapProduct = obj.map[list.company].map[list.product]
         if(!mapCompany[list.product]){
             obj.map[list.company].sort.push(list.product)
             obj.map[list.company].sort.sort()
             mapCompany[list.product]={'customerName':[list.customerName],'quantity':[list.quantity]}
         }else{
-            if(mapCompany[list.product].customerName.indexOf(list.customerName)>=0){
-                let i = mapCompany[list.product].customerName.indexOf(list.customerName)
-                mapCompany[list.product].quantity[i]+=list.quantity
+            if(mapProduct.customerName.indexOf(list.customerName)>=0){
+                let i = mapProduct.customerName.indexOf(list.customerName)
+                mapProduct.quantity[i]+=list.quantity
             }else{
-               mapCompany[list.product].customerName.push(list.customerName) 
-               mapCompany[list.product].quantity.push(list.quantity)
+               mapProduct.customerName.push(list.customerName) 
+               mapProduct.quantity.push(list.quantity)
             }
         }
     }
     console.log(obj)
     return obj
 }
-totalList()
+
 

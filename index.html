@@ -10,7 +10,6 @@
 <body>
     <input type="file" id="chooseFile" accept=".txt">
     <button id="import" onclick="selectFile()">Import</button>
-    <button id="click">click</button>
     <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download</a>
     <section class="container">
         <form id="myForm">
@@ -35,17 +34,44 @@
             <input class="btn" type="submit" value="Submit">
             <button type="button" id="clearAll">Clean All</button>
         </form>
-        <ul id="result">
-            <!-- <li class="item">item1
-                <button class="delete">-</button>
-            </li>
+        <div>
+            <ul id="nameList">
+                <li>Me</li>
+                <li>Serena</li>
+            </ul>
+            <div id="list">
+                <h3 id="customerName">Customer Name: Me</h3>
+                <div id=companyName>Company: Estee
+
+                    <div id="result">
+                        <table>
+                            <tr>
+                                <th>product</th>
+                                <th>quantity</th>
+                            </tr>
+                            <tr>
+                                <td>water</th>
+                                <td>5</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <ul id="result">
+            <li>Me</li>
+            <li>Sister</li>
+            <li>Serena</li>
             <li class="item">item1
                 <button class="delete">-</button>
             </li>
             <li class="item">item1
                 <button class="delete">-</button>
-            </li> -->
-        </ul>
+            </li>
+            <li class="item">item1
+                <button class="delete">-</button>
+            </li> 
+        </ul> -->
     </section>
 
     <script src="./script.js"></script>
