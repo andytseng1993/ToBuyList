@@ -36,7 +36,7 @@ function saveFile(){
         alert('Empty')
     }else{
         let downloadBtn = document.getElementById('download')
-        let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data,null, 2))
+        let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data))
         downloadBtn.setAttribute('href','data:' + dataStr)
     }
     
@@ -55,7 +55,7 @@ form.addEventListener('submit',function(event){
     event.preventDefault()
     try{
         if(customerName.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
-        else createList(customerName.value.trim(), companyInput.value.trim(),productInput.value.trim(),quantityInput.value)
+        else createList(customerName.value.trim(), companyInput.value.trim(),productInput.value.trim(),quantityInput.valueAsNumber)
     }catch(error){
         msg.classList.add('err')
         msg.textContent= error
@@ -79,6 +79,7 @@ class ToBuyList{
         this.product = productInput
         this.quantity = quantityInput
     }
+    
 }
 
 function createList (customerName, companyInput,productInput,quantityInput){
@@ -95,4 +96,70 @@ function addList(){
     result.innerHTML = list
 }
 
-console.log(data)
+function nameList(){
+    let obj ={
+        sort:[],
+        map:{}
+    }
+    for(let list of data){
+        if(!obj.map[list.customerName]){
+            obj.sort.push(list.customerName)
+            obj.map[list.customerName]={
+                sort:[],
+                map:{}
+            }
+        }
+        obj.sort.sort()
+        let mapCompany = obj.map[list.customerName].map
+        if(!mapCompany[list.company]){
+            obj.map[list.customerName].sort.push(list.company)
+            obj.map[list.customerName].sort.sort()
+            mapCompany[list.company]={'product':[list.product],'quantity':[list.quantity]}
+        }else{
+            if(mapCompany[list.company].product.indexOf(list.product)>=0){
+                let i = mapCompany[list.company].product.indexOf(list.product)
+                mapCompany[list.company].quantity[i]+=list.quantity
+            }else{
+               mapCompany[list.company].product.push(list.product) 
+               mapCompany[list.company].quantity.push(list.quantity)
+            }
+        }
+    }
+    return obj
+}
+nameList()
+
+function totalList(){
+    let obj ={
+        sort:[],
+        map:{}
+    }
+    for(let list of data){
+        if(!obj.map[list.company]){
+            obj.sort.push(list.company)
+            obj.map[list.company]={
+                sort:[],
+                map:{}
+            }
+        }
+        obj.sort.sort()
+        let mapCompany = obj.map[list.company].map
+        if(!mapCompany[list.product]){
+            obj.map[list.company].sort.push(list.product)
+            obj.map[list.company].sort.sort()
+            mapCompany[list.product]={'customerName':[list.customerName],'quantity':[list.quantity]}
+        }else{
+            if(mapCompany[list.product].customerName.indexOf(list.customerName)>=0){
+                let i = mapCompany[list.product].customerName.indexOf(list.customerName)
+                mapCompany[list.product].quantity[i]+=list.quantity
+            }else{
+               mapCompany[list.product].customerName.push(list.customerName) 
+               mapCompany[list.product].quantity.push(list.quantity)
+            }
+        }
+    }
+    console.log(obj)
+    return obj
+}
+totalList()
+
