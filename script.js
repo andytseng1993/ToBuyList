@@ -7,7 +7,6 @@ function selectFile(){
     if(file.files[0]){
         reader.addEventListener('load',function(event){
             const result = JSON.parse(reader.result)
-            console.log(result)
             data =result
             localStorage.setItem('list',JSON.stringify(data))
         })
@@ -19,7 +18,6 @@ function selectFile(){
 }
 
 function saveFile(){
-    console.log(data)
     if(Object.keys(data).length === 0 && data.constructor === Object){
         alert('Empty')
     }else{
@@ -42,7 +40,13 @@ form.addEventListener('submit',function(event){
     event.preventDefault()
     try{
         if(customerName.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
-        else createList(customerName.value.trim(), companyInput.value.trim(),productInput.value.trim(),quantityInput.valueAsNumber)
+        else {
+            let customerText = textUpper(customerName.value.trim())
+            let companyText = textUpper(companyInput.value.trim())
+            let productText = textUpper(productInput.value.trim())
+            console.log(customerText,companyText,productText)
+            createList(customerText, companyText,productText,quantityInput.valueAsNumber)
+        }
     }catch(error){
         msg.classList.add('err')
         msg.textContent= error
@@ -54,12 +58,17 @@ form.addEventListener('submit',function(event){
     }
 })
 
+function textUpper(text){
+    let changeText = text[0].toUpperCase()+text.slice(1).toLowerCase()
+    return changeText
+}
+
 readList()
 function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
     let nameList = customerNameList()
-    totalList()
-    addNameList(nameList)
+    let total =totalList()
+    addNameList(nameList,total)
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -75,16 +84,48 @@ function createList (customerName, companyInput,productInput,quantityInput){
     data.push(storeItems)
     localStorage.setItem('list',JSON.stringify(data))
     let nameList = customerNameList()
-    totalList()
-    addNameList(nameList)
+    let total =totalList()
+    addNameList(nameList,total)
 }
-function addNameList(nameList){
-    console.log(nameList)
-    
-    // for(let n =0; n<data.length;n++){
-    //     list+='<li class="item">'+data[n].customerName+`<button i=${n} class="delete">-</button></li>`
-    // }
-    // result.innerHTML = list
+function addNameList(nameList,total){
+    nameBtn.innerHTML='<button>Total</button>'
+    for(let name of nameList.sort){
+        let nameBtn = document.getElementById('nameBtn')
+        nameBtn.innerHTML+= `<button>${name}</button>`
+    }
+    let customer= `<h3 id="customerName">Total</h3>`
+    let list = document.getElementById('list')
+    list.innerHTML=''
+    console.log(customer)
+    list.innerHTML+=customer
+    for(let comapany of total.sort){
+        list.innerHTML+=`<div id=companyName>Company: ${comapany}</div>`
+        list.innerHTML+=`
+        <div id="result">
+            <div class="listTable ${comapany}">
+                <div class="head">
+                    <div>product</div>
+                    <div>quantity</div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        `
+        for(let product in total.map[comapany].map){
+            
+            let listTable=document.querySelector('.'+comapany)
+            let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
+            listTable.innerHTML+= `
+            <div class="productlist">
+                <div>${product}</div>
+                <div>${number}</div>
+                <button class="edit">Edit</button>
+                <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
+            </div>
+            `
+        }
+    }
 }
 
 function customerNameList(){
@@ -116,7 +157,6 @@ function customerNameList(){
             }
         }
     }
-    console.log(obj)
     return obj
 }
 
@@ -150,8 +190,21 @@ function totalList(){
             }
         }
     }
-    console.log(obj)
     return obj
 }
 
+function deleteTotalBtn(element){
+    let productName=element.parentNode.firstElementChild.textContent
+    let companyName=element.parentNode.parentNode.parentNode.previousElementSibling.textContent.split(': ')[1]
+    let text = 'Do you want to delete this item?'
+    if(confirm(text)){
+        element.parentNode.remove()
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.product!== productName
+        })
+    }
+    localStorage.setItem('list',JSON.stringify(data))
+    console.log(data)
 
+}
+console.log(data)
