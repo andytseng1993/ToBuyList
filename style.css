@@ -105,7 +105,7 @@ body,html{
     flex-basis: 17%;
     justify-content: center;
 }
-#detailBtn{
+.detailBtn{
     display: none;
 }
 .productlist label .down{
@@ -194,11 +194,11 @@ body,html{
     user-select: none;
     -webkit-user-select: none;
 }
-#result .listTable .productlist #detailBtn:checked ~ .detail .customerDetail{
+#result .listTable .productlist .detailBtn:checked ~ .detail .customerDetail{
     display: none;
 }
 
-#result .listTable .productlist #detailBtn:checked ~label .down{
+#result .listTable .productlist .detailBtn:checked ~label .down{
     transform: translate(-50%,-50%) rotate(180deg);
 
 }

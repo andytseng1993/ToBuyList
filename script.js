@@ -9,7 +9,7 @@ function selectFile(){
             const result = JSON.parse(reader.result)
             data =result
             localStorage.setItem('list',JSON.stringify(data))
-            // createTotalList(customerNameList(),totalList())
+            createTotalList(customerNameList(),totalList())
         })
         reader.readAsText(file.files[0])
     }else{                                                                                                              
@@ -68,7 +68,7 @@ function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
     let nameList = customerNameList()
     let total =totalList()
-    // createTotalList(nameList,total)
+    createTotalList(nameList,total)
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -116,13 +116,32 @@ function createTotalList(nameList,total){
             let listTable=document.querySelector('.'+comapany)
             let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
             listTable.innerHTML+= `
-            <div class="productlist">
+            <div class="productlist ${comapany} ${product}">
                 <div>${product}</div>
                 <div>${number}</div>
-                <button class="edit">Edit</button>
+                <input type="checkbox" class="detailBtn" id="${comapany+product}" checked>
+                <label for="${comapany+product}"><span class="down"></span></label>
                 <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
-            </div>
-            `
+            </div>`
+            let customer = total.map[comapany].map[product].customerName
+            let qty = total.map[comapany].map[product].quantity
+            console.log(customer.length)
+            console.log(product)
+            let productlist=document.querySelector('.productlist.'+comapany+'.'+product)
+            let detailList= `<div class="detail">`
+            for(let i=0;i<customer.length;i++){
+                let customerDetail = `
+                <div class="customerDetail">
+                    <div>${customer[i]}</div>
+                    <div>${qty[i]}</div>
+                    <button class="edit">Edit</button>
+                    <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
+                </div>
+                `
+                detailList+= customerDetail
+            }
+            console.log(detailList)
+            productlist.innerHTML+= detailList
         }
     }
 }
@@ -207,4 +226,4 @@ function deleteTotalBtn(element){
     console.log(data)
 
 }
-console.log(data)
+console.log(totalList())
