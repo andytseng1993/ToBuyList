@@ -9,6 +9,7 @@ function selectFile(){
             const result = JSON.parse(reader.result)
             data =result
             localStorage.setItem('list',JSON.stringify(data))
+            // createTotalList(customerNameList(),totalList())
         })
         reader.readAsText(file.files[0])
     }else{                                                                                                              
@@ -22,7 +23,7 @@ function saveFile(){
         alert('Empty')
     }else{
         let downloadBtn = document.getElementById('download')
-        let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data))
+        let dataStr = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data,null,2))
         downloadBtn.setAttribute('href','data:' + dataStr)
     } 
 }
@@ -44,7 +45,6 @@ form.addEventListener('submit',function(event){
             let customerText = textUpper(customerName.value.trim())
             let companyText = textUpper(companyInput.value.trim())
             let productText = textUpper(productInput.value.trim())
-            console.log(customerText,companyText,productText)
             createList(customerText, companyText,productText,quantityInput.valueAsNumber)
         }
     }catch(error){
@@ -68,7 +68,7 @@ function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
     let nameList = customerNameList()
     let total =totalList()
-    addNameList(nameList,total)
+    // createTotalList(nameList,total)
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -85,9 +85,9 @@ function createList (customerName, companyInput,productInput,quantityInput){
     localStorage.setItem('list',JSON.stringify(data))
     let nameList = customerNameList()
     let total =totalList()
-    addNameList(nameList,total)
+    createTotalList(nameList,total)
 }
-function addNameList(nameList,total){
+function createTotalList(nameList,total){
     nameBtn.innerHTML='<button>Total</button>'
     for(let name of nameList.sort){
         let nameBtn = document.getElementById('nameBtn')
@@ -96,7 +96,6 @@ function addNameList(nameList,total){
     let customer= `<h3 id="customerName">Total</h3>`
     let list = document.getElementById('list')
     list.innerHTML=''
-    console.log(customer)
     list.innerHTML+=customer
     for(let comapany of total.sort){
         list.innerHTML+=`<div id=companyName>Company: ${comapany}</div>`
@@ -195,13 +194,14 @@ function totalList(){
 
 function deleteTotalBtn(element){
     let productName=element.parentNode.firstElementChild.textContent
-    let companyName=element.parentNode.parentNode.parentNode.previousElementSibling.textContent.split(': ')[1]
+    let companyName=element.parentNode.parentNode.parentNode.previousElementSibling.textContent.split(':')[1]
+    companyName = companyName.trim()
     let text = 'Do you want to delete this item?'
     if(confirm(text)){
-        element.parentNode.remove()
         data = data.filter((el)=> {
             return el.company !== companyName || el.product!== productName
         })
+        createTotalList(customerNameList(),totalList())
     }
     localStorage.setItem('list',JSON.stringify(data))
     console.log(data)

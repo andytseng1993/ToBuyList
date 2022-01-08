@@ -50,7 +50,6 @@ body,html{
 }
 #list #result{
     font-size: 18px;
-    background-color: #eeeeee;
 }
 .listTable{
     display: flex;
@@ -66,6 +65,7 @@ body,html{
     font-weight: 500;
     border-top: 5px solid rgb(245, 245, 245);
     padding: 7px 10px;
+    background-color: #eeeeee;
 }
 .listTable .head div:nth-child(4n+1){
     display: flex;
@@ -74,12 +74,13 @@ body,html{
 }
 .listTable .head div:nth-child(4n+2){
     display: flex;
-    flex-basis: 21%;
+    flex-basis: 17%;
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+3){
     flex-basis: 7%;
     height: 0;
+    margin: 2px;
 }
 .listTable .head div:nth-child(4n+4){
     flex-basis: 5%;
@@ -94,29 +95,76 @@ body,html{
     padding: 3px 10px;
     border-top: 1px solid #ccc;
 }
-.listTable .productlist div:nth-child(2n+1){
+.listTable .productlist > div:nth-child(2n+1){
     display: flex;
     flex-basis: 65%;
     justify-content: center;
 }
-.listTable .productlist div:nth-child(2n+2){
+.listTable .productlist > div:nth-child(2n+2){
     display: flex;
-    flex-basis: 21%;
+    flex-basis: 17%;
+    justify-content: center;
+}
+#detail{
+    display: none;
+}
+.productlist label{
+    flex-basis: 6%;
+    background-color: white;
+    border-radius: 7px;
+    border: 1px solid #ddd;
+    margin: 2px;
+    text-align: center;
+    padding: 1.5px 5px;
+    font-size: 14px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.delete{
+    flex-basis: 5%;
+    font-size: 16px;
+    padding: 4px;
+    margin: 3px;
+    text-align: center;
+}
+#result .listTable .productlist .detail{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    background-color: white;
+    justify-content: center;
+}
+#result .listTable .productlist .detail .customerDetail{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+#result .listTable .productlist .detail .customerDetail div:nth-child(4n+1){
+    display: flex;
+    flex-basis: 65%;
+    justify-content: center;
+}
+#result .listTable .productlist .detail .customerDetail div:nth-child(4n+2){
+    display: flex;
+    flex-basis: 17%;
     justify-content: center;
 }
 .edit{
-    flex-basis: 7%;
+    flex-basis: 6%;
+    background-color: white;
+    border-radius: 7px;
+    border: 1px solid #ddd;
     margin: 2px;
-    padding: 6px px;
-    font-size: 13px;
+    text-align: center;
+    padding: 1.5px 5px;
+    font-size: 14px;
+    user-select: none;
+    -webkit-user-select: none;
 }
-.delete{
-    flex-basis:5%;
-    font-size: 16px;
-    padding: 4px 6px;
-    margin: 3px;
+#result .listTable .productlist #detail:checked ~ .detail{
+    display: none; 
 }
-
 /* #result table{
     position: relative;
     margin-top: 10px;
