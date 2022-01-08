@@ -105,20 +105,36 @@ body,html{
     flex-basis: 17%;
     justify-content: center;
 }
-#detail{
+#detailBtn{
     display: none;
 }
+.productlist label .down{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    transition: transform 0.5s;
+    width: 0px;
+    height: 0px;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    border-bottom: 5px solid #333;
+    
+}
 .productlist label{
+    position: relative;
+    height: 22px;
     flex-basis: 6%;
     background-color: white;
     border-radius: 7px;
     border: 1px solid #ddd;
     margin: 2px;
     text-align: center;
-    padding: 1.5px 5px;
+    padding: 3px 5px;
     font-size: 14px;
     user-select: none;
     -webkit-user-select: none;
+    cursor: pointer;
 }
 .delete{
     flex-basis: 5%;
@@ -126,6 +142,7 @@ body,html{
     padding: 4px;
     margin: 3px;
     text-align: center;
+    cursor: pointer;
 }
 #result .listTable .productlist .detail{
     display: flex;
@@ -134,21 +151,36 @@ body,html{
     background-color: white;
     justify-content: center;
 }
+
 #result .listTable .productlist .detail .customerDetail{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    color: #555;
+    animation: fadeIn 1s both;
+}
+@keyframes fadeIn {
+    0%{
+        height: 0px;
+        opacity: 0;
+    }
+    100%{
+        height: 30px;
+        opacity: 1;
+    }
 }
 #result .listTable .productlist .detail .customerDetail div:nth-child(4n+1){
     display: flex;
     flex-basis: 65%;
     justify-content: center;
+    font-size: 15px;
 }
 #result .listTable .productlist .detail .customerDetail div:nth-child(4n+2){
     display: flex;
     flex-basis: 17%;
     justify-content: center;
+    font-size: 15px;
 }
 .edit{
     flex-basis: 6%;
@@ -157,13 +189,18 @@ body,html{
     border: 1px solid #ddd;
     margin: 2px;
     text-align: center;
-    padding: 1.5px 5px;
-    font-size: 14px;
+    padding: 2px 3px;
+    font-size: 12px;
     user-select: none;
     -webkit-user-select: none;
 }
-#result .listTable .productlist #detail:checked ~ .detail{
-    display: none; 
+#result .listTable .productlist #detailBtn:checked ~ .detail .customerDetail{
+    display: none;
+}
+
+#result .listTable .productlist #detailBtn:checked ~label .down{
+    transform: translate(-50%,-50%) rotate(180deg);
+
 }
 /* #result table{
     position: relative;
