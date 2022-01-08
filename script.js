@@ -88,61 +88,63 @@ function createList (customerName, companyInput,productInput,quantityInput){
     createTotalList(nameList,total)
 }
 function createTotalList(nameList,total){
-    nameBtn.innerHTML='<button>Total</button>'
-    for(let name of nameList.sort){
+    if(total.sort.length > 0){
         let nameBtn = document.getElementById('nameBtn')
-        nameBtn.innerHTML+= `<button>${name}</button>`
-    }
-    let customer= `<h3 id="customerName">Total</h3>`
-    let list = document.getElementById('list')
-    list.innerHTML=''
-    list.innerHTML+=customer
-    for(let comapany of total.sort){
-        list.innerHTML+=`<div id=companyName>Company: ${comapany}</div>`
-        list.innerHTML+=`
-        <div id="result">
-            <div class="listTable ${comapany}">
-                <div class="head">
-                    <div>product</div>
-                    <div>quantity</div>
-                    <div></div>
-                    <div></div>
+        nameBtn.innerHTML='<button>Total</button>'
+        for(let name of nameList.sort){
+            nameBtn.innerHTML+= `<button>${name}</button>`
+        }
+        let customer= `<h3 id="customerName">Shopping List</h3>`
+        let list = document.getElementById('list')
+        list.innerHTML=''
+        list.innerHTML+=customer
+        for(let comapany of total.sort){
+            list.innerHTML+=`<div id=companyName>Company: ${comapany}</div>`
+            list.innerHTML+=`
+            <div id="result">
+                <div class="listTable ${comapany}">
+                    <div class="head">
+                        <div>product</div>
+                        <div>quantity</div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        `
-        for(let product in total.map[comapany].map){
-            
-            let listTable=document.querySelector('.'+comapany)
-            let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
-            listTable.innerHTML+= `
-            <div class="productlist ${comapany} ${product}">
-                <div>${product}</div>
-                <div>${number}</div>
-                <input type="checkbox" class="detailBtn" id="${comapany+product}" checked>
-                <label for="${comapany+product}"><span class="down"></span></label>
-                <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
-            </div>`
-            let customer = total.map[comapany].map[product].customerName
-            let qty = total.map[comapany].map[product].quantity
-            console.log(customer.length)
-            console.log(product)
-            let productlist=document.querySelector('.productlist.'+comapany+'.'+product)
-            let detailList= `<div class="detail">`
-            for(let i=0;i<customer.length;i++){
-                let customerDetail = `
-                <div class="customerDetail">
-                    <div>${customer[i]}</div>
-                    <div>${qty[i]}</div>
-                    <button class="edit">Edit</button>
-                    <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
-                </div>
-                `
-                detailList+= customerDetail
+            `
+            for(let product in total.map[comapany].map){
+                
+                let listTable=document.querySelector('.'+comapany)
+                let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
+                listTable.innerHTML+= `
+                <div class="productlist ${comapany} ${product}">
+                    <div>${product}</div>
+                    <div>${number}</div>
+                    <input type="checkbox" class="detailBtn" id="${comapany+product}" checked>
+                    <label for="${comapany+product}"><span class="down"></span></label>
+                    <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
+                </div>`
+                let customer = total.map[comapany].map[product].customerName
+                let qty = total.map[comapany].map[product].quantity
+                let productlist=document.querySelector('.productlist.'+comapany+'.'+product)
+                let detailList= `<div class="detail">`
+                for(let i=0;i<customer.length;i++){
+                    let customerDetail = `
+                    <div class="customerDetail">
+                        <div>${customer[i]}</div>
+                        <div>${qty[i]}</div>
+                        <button class="edit">Edit</button>
+                        <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
+                    </div>
+                    `
+                    detailList+= customerDetail
+                }
+                productlist.innerHTML+= detailList
             }
-            console.log(detailList)
-            productlist.innerHTML+= detailList
         }
+    }else{
+        nameBtn.innerHTML='Please submit the form :)'
+        list.innerHTML=''
     }
 }
 
@@ -215,7 +217,7 @@ function deleteTotalBtn(element){
     let productName=element.parentNode.firstElementChild.textContent
     let companyName=element.parentNode.parentNode.parentNode.previousElementSibling.textContent.split(':')[1]
     companyName = companyName.trim()
-    let text = 'Do you want to delete this item?'
+    let text = `Do you want to delete all ${productName}?`
     if(confirm(text)){
         data = data.filter((el)=> {
             return el.company !== companyName || el.product!== productName
@@ -226,4 +228,21 @@ function deleteTotalBtn(element){
     console.log(data)
 
 }
+function deleteDetailBtn(element){
+    let customerName=element.parentNode.firstElementChild.textContent
+    let productName=element.parentNode.parentNode.parentNode.firstElementChild.textContent
+    let companyName=element.parentNode.parentNode.parentNode.parentNode.getAttribute('class')
+    companyName = companyName.split(' ')[1].trim()
+    let text = `Do you want to delete this item?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.product!== productName || el.customerName !== customerName
+        })
+        createTotalList(customerNameList(),totalList())
+    }
+    localStorage.setItem('list',JSON.stringify(data))
+    console.log(data)
+}
 console.log(totalList())
+console.log(data)
+console.log(customerNameList())
