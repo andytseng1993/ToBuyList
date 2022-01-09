@@ -120,7 +120,7 @@ function createTotalList(nameList,total){
                 <div class="productlist ${comapany} ${product}">
                     <div>${product}</div>
                     <div>${number}</div>
-                    <input type="checkbox" class="detailBtn" id="${comapany+product}" checked>
+                    <input type="checkbox" class="detailBtn" id="${comapany+product}">
                     <label for="${comapany+product}"><span class="down"></span></label>
                     <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
                 </div>`
@@ -232,16 +232,25 @@ function deleteDetailBtn(element){
     let customerName=element.parentNode.firstElementChild.textContent
     let productName=element.parentNode.parentNode.parentNode.firstElementChild.textContent
     let companyName=element.parentNode.parentNode.parentNode.parentNode.getAttribute('class')
+    let checkBoxId = element.parentNode.parentNode.parentNode.children[2].getAttribute('id')
     companyName = companyName.split(' ')[1].trim()
     let text = `Do you want to delete this item?`
     if(confirm(text)){
-        data = data.filter((el)=> {
-            return el.company !== companyName || el.product!== productName || el.customerName !== customerName
+        new Promise(function(resolve,reject){
+            data = data.filter((el)=> {
+                return el.company !== companyName || el.product!== productName || el.customerName !== customerName
+            })
+            resolve(data)
+        }).then(function(){
+            createTotalList(customerNameList(),totalList())
+        }).then(function(){
+            let checkbox= document.getElementById(checkBoxId)
+            if(checkbox){
+                checkbox.checked = true
+            }
         })
-        createTotalList(customerNameList(),totalList())
     }
     localStorage.setItem('list',JSON.stringify(data))
-    console.log(data)
 }
 console.log(totalList())
 console.log(data)
