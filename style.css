@@ -108,19 +108,7 @@ body,html{
 .detailBtn{
     display: none;
 }
-.productlist label .down{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    transition: transform 0.5s;
-    width: 0px;
-    height: 0px;
-    border-right: 5px solid transparent;
-    border-left: 5px solid transparent;
-    border-bottom: 5px solid #333;
-    
-}
+
 .productlist label{
     position: relative;
     height: 22px;
@@ -135,6 +123,23 @@ body,html{
     user-select: none;
     -webkit-user-select: none;
     cursor: pointer;
+}
+.productlist label .down{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    transition: transform 0.5s;
+    width: 0px;
+    height: 0px;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    border-top: 5px solid #333;
+    
+}
+#result .listTable .productlist .detailBtn:checked ~label .down{
+    transform: translate(-50%,-50%) rotate(180deg);
+
 }
 .delete{
     flex-basis: 5%;
@@ -153,23 +158,26 @@ body,html{
 }
 
 #result .listTable .productlist .detail .customerDetail{
+    height:0px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     color: #555;
-    animation: fadeIn 1s both;
+    transform: translateY(-10px);
+    z-index: -10;
+    transition: height 0.5s ,opacity 1s;
+    opacity: 0;
 }
-@keyframes fadeIn {
-    0%{
-        height: 0px;
-        opacity: 0;
-    }
-    100%{
-        height: 30px;
-        opacity: 1;
-    }
+#result .listTable .productlist .detailBtn:checked ~ .detail .customerDetail{
+    transition: height 0.7s ,opacity 1s;
+    transition-delay: opacity 0.5s;
+    transform: translateY(0px);
+    height: 30px;
+    z-index: 0;
+    opacity: 1;
 }
+
 #result .listTable .productlist .detail .customerDetail div:nth-child(4n+1){
     display: flex;
     flex-basis: 65%;
@@ -194,14 +202,9 @@ body,html{
     user-select: none;
     -webkit-user-select: none;
 }
-#result .listTable .productlist .detailBtn:checked ~ .detail .customerDetail{
-    display: none;
-}
 
-#result .listTable .productlist .detailBtn:checked ~label .down{
-    transform: translate(-50%,-50%) rotate(180deg);
 
-}
+
 /* #result table{
     position: relative;
     margin-top: 10px;

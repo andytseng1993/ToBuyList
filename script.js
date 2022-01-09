@@ -42,9 +42,9 @@ form.addEventListener('submit',function(event){
     try{
         if(customerName.value === '' || companyInput.value===''|| productInput.value===''||quantityInput.value==='' ) throw 'Please enter all fields'
         else {
-            let customerText = textUpper(customerName.value.trim())
-            let companyText = textUpper(companyInput.value.trim())
-            let productText = textUpper(productInput.value.trim())
+            let customerText = textFirstUpper(customerName.value.trim())
+            let companyText = textFirstUpper(companyInput.value.trim())
+            let productText = textFirstUpper(productInput.value.trim())
             createList(customerText, companyText,productText,quantityInput.valueAsNumber)
         }
     }catch(error){
@@ -58,7 +58,7 @@ form.addEventListener('submit',function(event){
     }
 })
 
-function textUpper(text){
+function textFirstUpper(text){
     let changeText = text[0].toUpperCase()+text.slice(1).toLowerCase()
     return changeText
 }
@@ -112,7 +112,7 @@ function createTotalList(nameList,total){
                 </div>
             </div>
             `
-            for(let product in total.map[comapany].map){
+            for(let product of total.map[comapany].sort){
                 
                 let listTable=document.querySelector('.'+comapany)
                 let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
@@ -133,7 +133,7 @@ function createTotalList(nameList,total){
                     <div class="customerDetail">
                         <div>${customer[i]}</div>
                         <div>${qty[i]}</div>
-                        <button class="edit">Edit</button>
+                        <button class="edit" onclick='editBtn(this)'>Edit</button>
                         <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
                     </div>
                     `
@@ -206,7 +206,9 @@ function totalList(){
                 mapProduct.quantity[i]+=list.quantity
             }else{
                mapProduct.customerName.push(list.customerName) 
-               mapProduct.quantity.push(list.quantity)
+               mapProduct.customerName.sort()
+               let n = mapProduct.customerName.indexOf(list.customerName)
+               mapProduct.quantity.splice(n,0,list.quantity)
             }
         }
     }
@@ -252,6 +254,44 @@ function deleteDetailBtn(element){
     }
     localStorage.setItem('list',JSON.stringify(data))
 }
-console.log(totalList())
-console.log(data)
-console.log(customerNameList())
+function editBtn(element){
+    let customer=element.parentNode.firstElementChild
+    let quantity=element.parentNode.children[1]
+    let customerName = customer.textContent
+    customer.innerHTML=`<input type="text" style='text-align: center;'>`
+    let customerSelect = element.parentNode.firstElementChild.firstElementChild
+    customerSelect.setAttribute('value',customerName)
+    customerSelect.focus()
+    quantity.innerHTML=`<input type="number" style='width: 60px; text-align: center;' value='${quantity.textContent}'>`
+    element.textContent = 'Done'
+    let encode = encodeURI(`${customerName}`)
+    element.setAttribute('onclick','doneEdit(this,"'+encode+'")')
+}
+
+function doneEdit(element,encodeName){
+    encodeName = decodeURI(encodeName)
+    let productName=element.parentNode.parentNode.parentNode.firstElementChild.textContent
+    let companyName=element.parentNode.parentNode.parentNode.parentNode.getAttribute('class').split(' ')[1].trim()
+    let customerValue=element.parentNode.firstElementChild.children[0].value.trim()
+    let quantityValue=element.parentNode.children[1].children[0].valueAsNumber
+    let checkBoxId = element.parentNode.parentNode.parentNode.children[2].getAttribute('id')
+    customerValue=textFirstUpper(customerValue)
+
+    new Promise(function(resolve,reject){
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.product!== productName || el.customerName !== encodeName
+        })
+        resolve(data)
+    }).then(function(){
+        let storeItem = new ToBuyList(customerValue,companyName,productName,quantityValue)
+        data.push(storeItem)
+    }).then(function(){
+        createTotalList(customerNameList(),totalList())
+    }).then(function(){
+        let checkbox= document.getElementById(checkBoxId)
+        if(checkbox){
+            checkbox.checked = true
+        }
+    })
+    console.log(data)
+}
