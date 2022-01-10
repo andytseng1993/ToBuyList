@@ -94,14 +94,18 @@ function createTotalList(nameList,total){
         for(let name of nameList.sort){
             nameBtn.innerHTML+= `<button>${name}</button>`
         }
-        let customer= `<h3 id="customerName">Shopping List</h3>`
+        let customer= `<h3 id="customerName">All Shopping List</h3>`
         let list = document.getElementById('list')
         list.innerHTML=''
         list.innerHTML+=customer
         for(let comapany of total.sort){
-            list.innerHTML+=`<div id=companyName>Company: ${comapany}</div>`
             list.innerHTML+=`
-            <div id="result">
+            <div class='companyName'>Company: ${comapany}
+                <button class="delete" onclick='deleteCompanyBtn(this)' company='${comapany}'>&#215</button>
+            </div>
+            `
+            list.innerHTML+=`
+            <div class="result">
                 <div class="listTable ${comapany}">
                     <div class="head">
                         <div>product</div>
@@ -112,8 +116,8 @@ function createTotalList(nameList,total){
                 </div>
             </div>
             `
+            let index = 0
             for(let product of total.map[comapany].sort){
-                
                 let listTable=document.querySelector('.'+comapany)
                 let number = total.map[comapany].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
                 listTable.innerHTML+= `
@@ -133,7 +137,7 @@ function createTotalList(nameList,total){
                     <div class="customerDetail">
                         <div>${customer[i]}</div>
                         <div>${qty[i]}</div>
-                        <button class="edit" onclick='editBtn(this)'>Edit</button>
+                        <button class="edit" onclick='editBtn(this)' index='${index++}'>Edit</button>
                         <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
                     </div>
                     `
@@ -216,9 +220,9 @@ function totalList(){
 }
 
 function deleteTotalBtn(element){
-    let productName=element.parentNode.firstElementChild.textContent
-    let companyName=element.parentNode.parentNode.parentNode.previousElementSibling.textContent.split(':')[1]
-    companyName = companyName.trim()
+    let productListSelect=element.parentNode.getAttribute('class').split(' ')
+    let companyName = productListSelect[1].trim()
+    let productName=productListSelect[2].trim()
     let text = `Do you want to delete all ${productName}?`
     if(confirm(text)){
         data = data.filter((el)=> {
@@ -227,15 +231,13 @@ function deleteTotalBtn(element){
         createTotalList(customerNameList(),totalList())
     }
     localStorage.setItem('list',JSON.stringify(data))
-    console.log(data)
-
 }
 function deleteDetailBtn(element){
     let customerName=element.parentNode.firstElementChild.textContent
-    let productName=element.parentNode.parentNode.parentNode.firstElementChild.textContent
-    let companyName=element.parentNode.parentNode.parentNode.parentNode.getAttribute('class')
-    let checkBoxId = element.parentNode.parentNode.parentNode.children[2].getAttribute('id')
-    companyName = companyName.split(' ')[1].trim()
+    let productListSelect=element.parentNode.parentNode.parentNode.getAttribute('class').split(' ')
+    let companyName= productListSelect[1].trim()
+    let productName= productListSelect[2].trim()
+    let checkBoxId = companyName+productName
     let text = `Do you want to delete this item?`
     if(confirm(text)){
         new Promise(function(resolve,reject){
@@ -255,11 +257,13 @@ function deleteDetailBtn(element){
     localStorage.setItem('list',JSON.stringify(data))
 }
 function editBtn(element){
-    let customer=element.parentNode.firstElementChild
-    let quantity=element.parentNode.children[1]
+    let index = element.getAttribute('index')
+    let selectBtn = document.querySelectorAll('.customerDetail')[index]
+    let customer= selectBtn.firstElementChild
+    let quantity= selectBtn.children[1]
     let customerName = customer.textContent
     customer.innerHTML=`<input type="text" style='text-align: center;'>`
-    let customerSelect = element.parentNode.firstElementChild.firstElementChild
+    let customerSelect = selectBtn.firstElementChild.firstElementChild
     customerSelect.setAttribute('value',customerName)
     customerSelect.focus()
     quantity.innerHTML=`<input type="number" style='width: 60px; text-align: center;' value='${quantity.textContent}'>`
@@ -269,13 +273,16 @@ function editBtn(element){
 }
 
 function doneEdit(element,encodeName){
+    let index = element.getAttribute('index')
     encodeName = decodeURI(encodeName)
-    let productName=element.parentNode.parentNode.parentNode.firstElementChild.textContent
-    let companyName=element.parentNode.parentNode.parentNode.parentNode.getAttribute('class').split(' ')[1].trim()
-    let customerValue=element.parentNode.firstElementChild.children[0].value.trim()
-    let quantityValue=element.parentNode.children[1].children[0].valueAsNumber
-    let checkBoxId = element.parentNode.parentNode.parentNode.children[2].getAttribute('id')
+    let selectBtn = document.querySelectorAll('.customerDetail')[index]
+    let productListSelect = selectBtn.parentNode.parentNode.getAttribute('class').split(' ')
+    let companyName= productListSelect[1].trim()
+    let productName= productListSelect[2].trim()
+    let checkBoxId = companyName+productName
+    let customerValue = selectBtn.firstElementChild.firstElementChild.value.trim()
     customerValue=textFirstUpper(customerValue)
+    let quantityValue= selectBtn.children[1].firstElementChild.valueAsNumber
 
     new Promise(function(resolve,reject){
         data = data.filter((el)=> {
@@ -286,6 +293,7 @@ function doneEdit(element,encodeName){
         let storeItem = new ToBuyList(customerValue,companyName,productName,quantityValue)
         data.push(storeItem)
     }).then(function(){
+        localStorage.setItem('list',JSON.stringify(data))
         createTotalList(customerNameList(),totalList())
     }).then(function(){
         let checkbox= document.getElementById(checkBoxId)
@@ -293,5 +301,15 @@ function doneEdit(element,encodeName){
             checkbox.checked = true
         }
     })
-    console.log(data)
+}
+function deleteCompanyBtn(element){
+    let companyName= element.getAttribute('company')   
+    let text = `Do you want to delete all product in ${companyName}?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName
+        })
+        createTotalList(customerNameList(),totalList())
+    }
+    localStorage.setItem('list',JSON.stringify(data))
 }
