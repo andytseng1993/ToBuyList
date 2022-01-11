@@ -1,6 +1,6 @@
 'use strict';
 let data = []
-
+let openDetail = []
 function selectFile(){
     let file = document.getElementById('chooseFile')
     let reader = new FileReader()
@@ -99,6 +99,7 @@ function createTotalList(nameList,total){
         list.innerHTML=''
         list.innerHTML+=customer
         let index = 0
+        let i = 0
         for(let comapany of total.sort){
             list.innerHTML+=`
             <div class='companyName'>Company: ${comapany}
@@ -125,7 +126,7 @@ function createTotalList(nameList,total){
                     <button class="add" onclick='addBtn(this)' company='${comapany}'>+add</button>
                     <div>${product}</div>
                     <div>${number}</div>
-                    <input type="checkbox" class="detailBtn" id="${comapany+product}">
+                    <input type="checkbox" class="detailBtn" id="${comapany+product}" i='${i}' onclick='addOpenDetail(${i++})'>
                     <label for="${comapany+product}"><span class="down"></span></label>
                     <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
                 </div>`
@@ -233,12 +234,31 @@ function deleteTotalBtn(element){
     }
     localStorage.setItem('list',JSON.stringify(data))
 }
+
+function addOpenDetail(number){
+    number = parseInt(number)
+    if(openDetail.indexOf(number)===-1){
+        openDetail.push(number)
+        openDetail.sort((a, b) => a - b)
+    }else{
+        let index = openDetail.indexOf(number)
+        openDetail.splice(index,1)
+    }
+    OpenDetailBox()
+    console.log(openDetail)
+}
+function OpenDetailBox(){
+    let openDetailBox = document.querySelectorAll('.detailBtn')
+    for (let i = 0;i<openDetail.length;i++){
+        openDetailBox[openDetail[i]].checked= true
+    }
+}
+
 function deleteDetailBtn(element){
     let customerName=element.parentNode.firstElementChild.textContent
     let productListSelect=element.parentNode.parentNode.parentNode.getAttribute('class').split(' ')
     let companyName= productListSelect[1].trim()
     let productName= productListSelect[2].trim()
-    let checkBoxId = companyName+productName
     let text = `Do you want to delete this item?`
     if(confirm(text)){
         new Promise(function(resolve,reject){
@@ -249,10 +269,7 @@ function deleteDetailBtn(element){
         }).then(function(){
             createTotalList(customerNameList(),totalList())
         }).then(function(){
-            let checkbox= document.getElementById(checkBoxId)
-            if(checkbox){
-                checkbox.checked = true
-            }
+            OpenDetailBox()
         })
     }
     localStorage.setItem('list',JSON.stringify(data))
@@ -289,7 +306,6 @@ function doneEdit(element,encodeName,oldQuantity){
     let productListSelect = selectBtn.parentNode.parentNode.getAttribute('class').split(' ')
     let companyName= productListSelect[1].trim()
     let productName= productListSelect[2].trim()
-    let checkBoxId = companyName+productName
     let customerValue = selectBtn.firstElementChild.firstElementChild.value.trim()
     customerValue=textFirstUpper(customerValue)
     let quantityValue= selectBtn.children[1].firstElementChild.valueAsNumber
@@ -306,10 +322,7 @@ function doneEdit(element,encodeName,oldQuantity){
             localStorage.setItem('list',JSON.stringify(data))
             createTotalList(customerNameList(),totalList())
         }).then(function(){
-            let checkbox= document.getElementById(checkBoxId)
-            if(checkbox){
-                checkbox.checked = true
-            }
+            OpenDetailBox()
         })
     }else{
         customer.innerHTML=encodeName
@@ -355,8 +368,12 @@ function addBtn(element){
     let productName = addBtnClass[2].trim()
     let checkBoxId = companyName+productName
     let checkbox= document.getElementById(checkBoxId)
+    let number = checkbox.getAttribute('i')
     new Promise((resolve,reject)=>{
-        checkbox.checked = true
+        if(!checkbox.checked){
+            addOpenDetail(number)
+            OpenDetailBox()
+        }
         setTimeout(function(){
             resolve(true)
         },750)
@@ -380,8 +397,7 @@ function addBtn(element){
             return false
         }
     }).then(function(){
-        let checkbox= document.getElementById(checkBoxId)
-        checkbox.checked = true  
+        OpenDetailBox() 
     })
     
 }
