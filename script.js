@@ -138,8 +138,8 @@ function createTotalList(nameList,total){
                     <div class="customerDetail">
                         <div>${customer[i]}</div>
                         <div>${qty[i]}</div>
-                        <button class="edit" onclick='editBtn(this)' index='${index++}'>Edit</button>
-                        <button class="delete" onclick='deleteDetailBtn(this)'>&#215</button>
+                        <button class="edit" onclick='editBtn(this)' index='${index}'>Edit</button>
+                        <button class="delete" onclick='deleteDetailBtn(this)' index='${index++}'>&#215</button>
                     </div>
                     `
                     detailList+= customerDetail
@@ -262,6 +262,7 @@ function editBtn(element){
     let selectBtn = document.querySelectorAll('.customerDetail')[index]
     let customer= selectBtn.firstElementChild
     let quantity= selectBtn.children[1]
+    let cancelBtn = selectBtn.children[3]
     let quantityValue = quantity.textContent
     let customerName = customer.textContent
     customer.innerHTML=`<input type="text" style='text-align: center;'>`
@@ -269,9 +270,13 @@ function editBtn(element){
     customerSelect.setAttribute('value',customerName)
     customerSelect.focus()
     quantity.innerHTML=`<input type="number" style='width: 60px; text-align: center;' value='${quantity.textContent}' min= '1'>`
-    element.textContent = 'Done'
+    element.textContent = 'Cancel'
+    cancelBtn.textContent= 'Done'
     let encode = encodeURI(`${customerName}`)
-    element.setAttribute('onclick','doneEdit(this,"'+encode+'",'+quantityValue+')')
+    element.setAttribute('onclick','cancelEdit(this,"'+encode+'",'+quantityValue+')')
+    element.setAttribute('class','cancel')
+    cancelBtn.setAttribute('onclick','doneEdit(this,"'+encode+'",'+quantityValue+')')
+    cancelBtn.setAttribute('class','done')
 }
 
 function doneEdit(element,encodeName,oldQuantity){
@@ -280,6 +285,7 @@ function doneEdit(element,encodeName,oldQuantity){
     let selectBtn = document.querySelectorAll('.customerDetail')[index]
     let customer= selectBtn.firstElementChild
     let quantity= selectBtn.children[1]
+    let editBtn = selectBtn.children[2]
     let productListSelect = selectBtn.parentNode.parentNode.getAttribute('class').split(' ')
     let companyName= productListSelect[1].trim()
     let productName= productListSelect[2].trim()
@@ -308,11 +314,28 @@ function doneEdit(element,encodeName,oldQuantity){
     }else{
         customer.innerHTML=encodeName
         quantity.innerHTML=oldQuantity
-        element.textContent ='Edit'
-        element.setAttribute('onclick','editBtn(this)')
+        editBtn.textContent ='Edit'
+        editBtn.setAttribute('onclick','editBtn(this)')
+        element.innerHTML = '&#215'
+        element.setAttribute('onclick','deleteDetailBtn(this)')
+        element.setAttribute('class','delete')
     }
 }
-
+function cancelEdit(element,encodeName,oldQuantity){
+    let index = element.getAttribute('index')
+    encodeName = decodeURI(encodeName)
+    let selectBtn = document.querySelectorAll('.customerDetail')[index]
+    let customer= selectBtn.firstElementChild
+    let quantity= selectBtn.children[1]
+    let deletBtn = selectBtn.children[3]
+    customer.innerHTML=encodeName
+    quantity.innerHTML=oldQuantity
+    element.innerHTML='Edit'
+    element.setAttribute('onclick','editBtn(this)')
+    deletBtn.innerHTML = '&#215'
+    deletBtn.setAttribute('onclick','deleteDetailBtn(this)')
+    deletBtn.setAttribute('class','delete')
+}
 
 function deleteCompanyBtn(element){
     let companyName= element.getAttribute('company')   
