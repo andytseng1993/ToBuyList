@@ -89,6 +89,7 @@ body,html{
     height: 0;
 }
 .listTable .productlist{
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -97,12 +98,18 @@ body,html{
     padding: 3px 10px;
     border-top: 1px solid #ccc;
 }
-.listTable .productlist > div:nth-child(2n+1){
+.listTable .productlist .add{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    padding: 5px;
+}
+.listTable .productlist > div:nth-child(3n+2){
     display: flex;
     flex-basis: 65%;
     justify-content: center;
 }
-.listTable .productlist > div:nth-child(2n+2){
+.listTable .productlist > div:nth-child(3n+3){
     display: flex;
     flex-basis: 17%;
     justify-content: center;
@@ -143,13 +150,17 @@ body,html{
     transform: translate(-50%,-50%) rotate(180deg);
 
 }
-.delete{
+
+.delete,.done{
     flex-basis: 5%;
     font-size: 16px;
     padding: 4px;
     margin: 3px;
     text-align: center;
     cursor: pointer;
+}
+.done{
+    font-size: 12px;
 }
 .result .listTable .productlist .detail{
     display: flex;
@@ -192,7 +203,7 @@ body,html{
     justify-content: center;
     font-size: 15px;
 }
-.edit{
+.edit,.cancel{
     flex-basis: 6%;
     background-color: white;
     border-radius: 7px;
