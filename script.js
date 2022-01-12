@@ -369,6 +369,7 @@ function addBtn(element){
     let productName = addBtnClass[2].trim()
     let checkBoxId = companyName+productName
     let checkbox= document.getElementById(checkBoxId)
+    let number = checkbox.getAttribute('i')
     new Promise((resolve,reject)=>{
         if(!checkbox.checked){
             addOpenDetail(checkbox)

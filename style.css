@@ -71,7 +71,7 @@ body,html{
 }
 .listTable .head div:nth-child(4n+1){
     display: flex;
-    flex-basis: 65%;
+    flex-basis: 63%;
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+2){
@@ -111,7 +111,7 @@ body,html{
 }
 .listTable .productlist > div:nth-child(3n+3){
     display: flex;
-    flex-basis: 17%;
+    flex-basis: 18%;
     justify-content: center;
 }
 .detailBtn{
