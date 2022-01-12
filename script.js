@@ -86,6 +86,7 @@ function createList (customerName, companyInput,productInput,quantityInput){
     let nameList = customerNameList()
     let total =totalList()
     createTotalList(nameList,total)
+    OpenDetailBox()
 }
 function createTotalList(nameList,total){
     if(total.sort.length > 0){
@@ -126,7 +127,7 @@ function createTotalList(nameList,total){
                     <button class="add" onclick='addBtn(this)' company='${comapany}'>+add</button>
                     <div>${product}</div>
                     <div>${number}</div>
-                    <input type="checkbox" class="detailBtn" id="${comapany+product}" i='${i}' onclick='addOpenDetail(${i++})'>
+                    <input type="checkbox" class="detailBtn" id="${comapany+product}" onclick='addOpenDetail(this)'>
                     <label for="${comapany+product}"><span class="down"></span></label>
                     <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
                 </div>`
@@ -235,22 +236,22 @@ function deleteTotalBtn(element){
     localStorage.setItem('list',JSON.stringify(data))
 }
 
-function addOpenDetail(number){
-    number = parseInt(number)
-    if(openDetail.indexOf(number)===-1){
-        openDetail.push(number)
+function addOpenDetail(element){
+    let detailBtnId = element.getAttribute('id')
+    let index = openDetail.indexOf(detailBtnId)
+    if(index===-1){
+        openDetail.push(detailBtnId)
         openDetail.sort((a, b) => a - b)
     }else{
-        let index = openDetail.indexOf(number)
         openDetail.splice(index,1)
     }
     OpenDetailBox()
     console.log(openDetail)
 }
 function OpenDetailBox(){
-    let openDetailBox = document.querySelectorAll('.detailBtn')
     for (let i = 0;i<openDetail.length;i++){
-        openDetailBox[openDetail[i]].checked= true
+        let openDetailBox = document.getElementById(openDetail[i])
+        openDetailBox.checked= true
     }
 }
 
@@ -368,10 +369,9 @@ function addBtn(element){
     let productName = addBtnClass[2].trim()
     let checkBoxId = companyName+productName
     let checkbox= document.getElementById(checkBoxId)
-    let number = checkbox.getAttribute('i')
     new Promise((resolve,reject)=>{
         if(!checkbox.checked){
-            addOpenDetail(number)
+            addOpenDetail(checkbox)
             OpenDetailBox()
         }
         setTimeout(function(){

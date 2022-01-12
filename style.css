@@ -31,9 +31,9 @@ body,html{
     border-radius: 15px;
 }
 #list{
+
     max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 25px auto ;
     background-color: rgb(245, 245, 245);
 }
 #customerName{
@@ -46,7 +46,7 @@ body,html{
     align-items: center;
     justify-content: space-between;
     font-size: 18px;
-    padding: 10px 40px;
+    padding: 10px 30px;
     margin: 0;
     background-color: rgb(244, 137, 137);
 }
@@ -66,12 +66,12 @@ body,html{
     align-items: center;
     font-weight: 500;
     border-top: 5px solid rgb(245, 245, 245);
-    padding: 7px 10px;
+    padding: 7px 20px;
     background-color: #eeeeee;
 }
 .listTable .head div:nth-child(4n+1){
     display: flex;
-    flex-basis: 63%;
+    flex-basis: 65%;
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+2){
@@ -80,7 +80,7 @@ body,html{
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+3){
-    flex-basis: 10%;
+    flex-basis: 9%;
     height: 0;
     margin: 2px;
 }
@@ -101,7 +101,7 @@ body,html{
 .listTable .productlist .add{
     position: absolute;
     top: 5px;
-    left: 10px;
+    left: 25px;
     padding: 5px;
 }
 .listTable .productlist > div:nth-child(3n+2){
@@ -111,7 +111,7 @@ body,html{
 }
 .listTable .productlist > div:nth-child(3n+3){
     display: flex;
-    flex-basis: 18%;
+    flex-basis: 17%;
     justify-content: center;
 }
 .detailBtn{
