@@ -1,5 +1,6 @@
 'use strict';
 let data = []
+let openShoppingList = []
 let openDetail = []
 function selectFile(){
     let file = document.getElementById('chooseFile')
@@ -141,7 +142,7 @@ function totalShoppingList(){
             let newStringProduct = removeSpecialChar(product)
             let number = total.map[company].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
             listTable.innerHTML+= `
-            <div class="productlist ${newStringcompany} ${newStringProduct}">
+            <div class="productlist ${newStringcompany+newStringProduct}">
                 <button class="add" onclick='addBtn(this)'>+add</button>
                 <div>${product}</div>
                 <div>${number}</div>
@@ -151,7 +152,7 @@ function totalShoppingList(){
             </div>`
             let customer = total.map[company].map[product].customerName
             let qty = total.map[company].map[product].quantity
-            let productlist=document.querySelector('.productlist.'+newStringcompany+'.'+newStringProduct)
+            let productlist=document.querySelector('.productlist.'+newStringcompany+newStringProduct)
             let detailList= `<div class="detail">`
             for(let i=0;i<customer.length;i++){
                 let customerDetail = `
@@ -159,7 +160,7 @@ function totalShoppingList(){
                     <div>${customer[i]}</div>
                     <div>${qty[i]}</div>
                     <button class="edit" onclick='editBtn(this)' index='${index}'>Edit</button>
-                    <button class="delete" onclick='deleteDetailBtn(this)' index='${index++}'>&#215</button>
+                    <button class="delete" onclick='deleteTotalDetailBtn(this)' index='${index++}'>&#215</button>
                 </div>
                 `
                 detailList+= customerDetail
@@ -167,6 +168,7 @@ function totalShoppingList(){
             productlist.innerHTML+= detailList
         }
     }
+    // OpenDetailBox()
 }
 
 function customerNameList(){
@@ -277,8 +279,8 @@ function CustomerShoppingList(element){
                 <div></div>
                 <div>${product}</div>
                 <div>${quantity}</div>
-                <button class="edit" onclick='editBtn(this)'>Edit</button>
-                <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
+                <button class="edit" onclick='editProductBtn(this)'>Edit</button>
+                <button class="delete" onclick='deleteProductBtn(this)'>&#215</button>
             </div>`
         }
     }
@@ -288,20 +290,7 @@ function removeSpecialChar(str){
     return str.replace(/[^A-Z0-9]+/ig,'_')
 }
 
-function deleteTotalBtn(element){
-    
-    let companyName = element.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
-    let productName=element.parentNode.children[1].textContent
-    console.log(companyName,productName)
-    let text = `Do you want to delete all ${productName}?`
-    if(confirm(text)){
-        data = data.filter((el)=> {
-            return el.company !== companyName || el.product!== productName
-        })
-        // createTotalList(customerNameList(),totalList())
-    }
-    localStorage.setItem('list',JSON.stringify(data))
-}
+
 
 function addOpenDetail(element){
     let detailBtnId = element.getAttribute('id')
@@ -314,20 +303,59 @@ function addOpenDetail(element){
     }
     OpenDetailBox()
 }
+function deleteOpenDetail(element){
+
+}
 function OpenDetailBox(){
     for (let i = 0;i<openDetail.length;i++){
         let openDetailBox = document.getElementById(openDetail[i])
         openDetailBox.checked= true
-        console.log(openDetailBox)
         createNameList()
     }
 }
 
-function deleteDetailBtn(element){
+function deleteCompanyBtn(element){
+    let companyName= element.previousElementSibling.textContent 
+    let text = `Do you want to delete all product in ${companyName}?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName
+        })
+        totalShoppingList()
+        openDetail=[]
+    }
+    localStorage.setItem('list',JSON.stringify(data))
+}
+
+function deleteTotalBtn(element){
+    let companyName = element.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
+    let productName=element.parentNode.children[1].textContent
+    let deleteOpenDetail = element.parentNode.getAttribute('class').split(' ')[1]
+    let index = openDetail.indexOf(deleteOpenDetail)
+    let text = `Do you want to delete all ${productName}?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.product!== productName
+        })
+        if(index>=0){
+            openDetail.splice(index,1)
+        }
+        totalShoppingList()
+        OpenDetailBox()
+    }
+    localStorage.setItem('list',JSON.stringify(data))
+}
+
+function deleteTotalDetailBtn(element){
     let customerName=element.parentNode.firstElementChild.textContent
     let companyName= element.parentNode.parentNode.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
     let productName= element.parentNode.parentNode.parentNode.children[1].textContent
+    let deleteOpenDetail = element.parentNode.parentNode.parentNode.getAttribute('class').split(' ')[1]
+    let checkList = totalList()
+    console.log(checkList.map[companyName].map[productName].customerName.length)
+    console.log(deleteOpenDetail)
     let text = `Do you want to delete this item?`
+    
     if(confirm(text)){
         new Promise(function(resolve,reject){
             data = data.filter((el)=> {
@@ -335,9 +363,14 @@ function deleteDetailBtn(element){
             })
             resolve(data)
         }).then(function(){
-            createTotalList(customerNameList(),totalList())
-        }).then(function(){
+            if(checkList.map[companyName].map[productName].customerName.length===1){
+                console.log('1111')
+                let index = openDetail.indexOf(deleteOpenDetail)
+                openDetail.splice(index,1)
+            }
+            totalShoppingList()
             OpenDetailBox()
+            
         })
     }
     localStorage.setItem('list',JSON.stringify(data))
@@ -387,8 +420,7 @@ function doneEdit(element,encodeName,oldQuantity){
             data.push(storeItem)
         }).then(function(){
             localStorage.setItem('list',JSON.stringify(data))
-            createTotalList(customerNameList(),totalList())
-        }).then(function(){
+            totalShoppingList()
             OpenDetailBox()
         })
     }else{
@@ -397,7 +429,7 @@ function doneEdit(element,encodeName,oldQuantity){
         editBtn.textContent ='Edit'
         editBtn.setAttribute('onclick','editBtn(this)')
         element.innerHTML = '&#215'
-        element.setAttribute('onclick','deleteDetailBtn(this)')
+        element.setAttribute('onclick','deleteTotalDetailBtn(this)')
         element.setAttribute('class','delete')
     }
 }
@@ -413,30 +445,18 @@ function cancelEdit(element,encodeName,oldQuantity){
     element.innerHTML='Edit'
     element.setAttribute('onclick','editBtn(this)')
     deletBtn.innerHTML = '&#215'
-    deletBtn.setAttribute('onclick','deleteDetailBtn(this)')
+    deletBtn.setAttribute('onclick','deleteTotalDetailBtn(this)')
     deletBtn.setAttribute('class','delete')
 }
 
-function deleteCompanyBtn(element){
-    let companyName= element.previousElementSibling.textContent 
-    let text = `Do you want to delete all product in ${companyName}?`
-    if(confirm(text)){
-        data = data.filter((el)=> {
-            return el.company !== companyName
-        })
-        createTotalList(customerNameList(),totalList())
-    }
-    localStorage.setItem('list',JSON.stringify(data))
-}
 
 function addBtn(element){
-    let addBtnClass = element.parentNode.getAttribute('class').split(' ')
-    let companyClassName = addBtnClass[1].trim()
-    let productClassName = addBtnClass[2].trim()
+    
     let companyName = element.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
     let productName = element.nextElementSibling.textContent
-    let checkBoxId = companyClassName+productClassName
-    let checkbox= document.getElementById(checkBoxId)
+    
+    let checkbox= element.parentNode.children[3]
+    console.log(checkbox)
     new Promise((resolve,reject)=>{
         if(!checkbox.checked){
             addOpenDetail(checkbox)
@@ -459,7 +479,7 @@ function addBtn(element){
                 let storeItem = new ToBuyList(CustomerName,companyName,productName,quantity)
                 data.push(storeItem)
                 localStorage.setItem('list',JSON.stringify(data))
-                createTotalList(customerNameList(),totalList())
+                totalShoppingList()
             }
         }else{
             return false
@@ -469,4 +489,13 @@ function addBtn(element){
     })
     
 }
+
+function deleteProductBtn(element){
+    console.log(element)
+}
+function editProductBtn(element){
+    console.log(element)
+}
 console.log(data)
+console.log(customerNameList())
+console.log(totalList())
