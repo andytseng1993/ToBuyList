@@ -133,6 +133,9 @@ body,html{
     -webkit-user-select: none;
     cursor: pointer;
 }
+.productlist .skip{
+    flex-basis: 8%;
+}
 .productlist label .down{
     position: absolute;
     left: 50%;

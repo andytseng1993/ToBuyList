@@ -9,7 +9,8 @@ function selectFile(){
             const result = JSON.parse(reader.result)
             data =result
             localStorage.setItem('list',JSON.stringify(data))
-            createTotalList(customerNameList(),totalList())
+            createNameList(customerNameList(),totalList())
+            totalShoppingList()
         })
         reader.readAsText(file.files[0])
     }else{                                                                                                              
@@ -68,7 +69,8 @@ function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
     let nameList = customerNameList()
     let total =totalList()
-    createTotalList(nameList,total)
+    createNameList(nameList,total)
+
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -83,78 +85,87 @@ function createList (customerName, companyInput,productInput,quantityInput){
     let storeItems = new ToBuyList(customerName,companyInput,productInput,quantityInput)
     data.push(storeItems)
     localStorage.setItem('list',JSON.stringify(data))
-    let nameList = customerNameList()
-    let total =totalList()
-    createTotalList(nameList,total)
+    
+    createNameList()
+    totalShoppingList()
     OpenDetailBox()
 }
-function createTotalList(nameList,total){
+function createNameList(){
+    let nameList = customerNameList()
+    let total =totalList()
     if(total.sort.length > 0){
         let nameBtn = document.getElementById('nameBtn')
-        nameBtn.innerHTML='<button>Total</button>'
-        for(let name of nameList.sort){
-            nameBtn.innerHTML+= `<button>${name}</button>`
+        // nameBtn.innerHTML='<label><input type="radio" class="nameBtn active" name="nameBtn" onclick="totalShoppingList()" checked>total</label>'
+        nameBtn.innerHTML='<button index=0 class="nameBtn active" onclick="totalShoppingList()"> Total</button>'
+        for(let n=0;n<nameList.sort.length;n++){
+            // nameBtn.innerHTML+= `<label><input type="radio" name="nameBtn" class="nameBtn">${nameList.sort[n]}</label>`
+            nameBtn.innerHTML+= `<button index='${n+1}' class="nameBtn" onclick="CustomerShoppingList(this)">${nameList.sort[n]}</button>`
         }
-        let customer= `<h3 id="customerName">All Shopping List</h3>`
-        let list = document.getElementById('list')
-        list.innerHTML=''
-        list.innerHTML+=customer
-        let index = 0
-        let i = 0
-        for(let company of total.sort){
-            let newStringcompany = removeSpecialChar(company)
-            list.innerHTML+=`
-            <div class='companyName'>
-                <span>${company}</span>
-                <button class="delete" onclick='deleteCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
-            </div>
-            `
-            list.innerHTML+=`
-            <div class="result">
-                <div class="listTable ${newStringcompany}">
-                    <div class="head">
-                        <div>product</div>
-                        <div>quantity</div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-            </div>
-            `
-            for(let product of total.map[company].sort){
-                let listTable=document.querySelector('.'+newStringcompany)
-                let newStringProduct = removeSpecialChar(product)
-                let number = total.map[company].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
-                listTable.innerHTML+= `
-                <div class="productlist ${newStringcompany} ${newStringProduct}">
-                    <button class="add" onclick='addBtn(this)'>+add</button>
-                    <div>${product}</div>
-                    <div>${number}</div>
-                    <input type="checkbox" class="detailBtn" id="${newStringcompany+newStringProduct}" onclick='addOpenDetail(this)'>
-                    <label for="${newStringcompany+newStringProduct}"><span class="down"></span></label>
-                    <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
-                </div>`
-                let customer = total.map[company].map[product].customerName
-                let qty = total.map[company].map[product].quantity
-                let productlist=document.querySelector('.productlist.'+newStringcompany+'.'+newStringProduct)
-                let detailList= `<div class="detail">`
-                for(let i=0;i<customer.length;i++){
-                    let customerDetail = `
-                    <div class="customerDetail">
-                        <div>${customer[i]}</div>
-                        <div>${qty[i]}</div>
-                        <button class="edit" onclick='editBtn(this)' index='${index}'>Edit</button>
-                        <button class="delete" onclick='deleteDetailBtn(this)' index='${index++}'>&#215</button>
-                    </div>
-                    `
-                    detailList+= customerDetail
-                }
-                productlist.innerHTML+= detailList
-            }
-        }
+        
     }else{
         nameBtn.innerHTML='Please submit the form :)'
         list.innerHTML=''
+    }
+}
+
+function totalShoppingList(){
+    let customer= `<h3 id="customerName">All Shopping List</h3>`
+    let list = document.getElementById('list')
+    list.innerHTML=''
+    list.innerHTML+=customer
+    let index = 0
+    let i = 0
+    let total =totalList()
+    for(let company of total.sort){
+        let newStringcompany = removeSpecialChar(company)
+        list.innerHTML+=`
+        <div class='companyName'>
+            <span>${company}</span>
+            <button class="delete" onclick='deleteCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
+        </div>
+        `
+        list.innerHTML+=`
+        <div class="result">
+            <div class="listTable ${newStringcompany}">
+                <div class="head">
+                    <div>product</div>
+                    <div>quantity</div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        `
+        for(let product of total.map[company].sort){
+            let listTable=document.querySelector('.'+newStringcompany)
+            let newStringProduct = removeSpecialChar(product)
+            let number = total.map[company].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
+            listTable.innerHTML+= `
+            <div class="productlist ${newStringcompany} ${newStringProduct}">
+                <button class="add" onclick='addBtn(this)'>+add</button>
+                <div>${product}</div>
+                <div>${number}</div>
+                <input type="checkbox" class="detailBtn" id="${newStringcompany+newStringProduct}" onclick='addOpenDetail(this)'>
+                <label for="${newStringcompany+newStringProduct}"><span class="down"></span></label>
+                <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
+            </div>`
+            let customer = total.map[company].map[product].customerName
+            let qty = total.map[company].map[product].quantity
+            let productlist=document.querySelector('.productlist.'+newStringcompany+'.'+newStringProduct)
+            let detailList= `<div class="detail">`
+            for(let i=0;i<customer.length;i++){
+                let customerDetail = `
+                <div class="customerDetail">
+                    <div>${customer[i]}</div>
+                    <div>${qty[i]}</div>
+                    <button class="edit" onclick='editBtn(this)' index='${index}'>Edit</button>
+                    <button class="delete" onclick='deleteDetailBtn(this)' index='${index++}'>&#215</button>
+                </div>
+                `
+                detailList+= customerDetail
+            }
+            productlist.innerHTML+= detailList
+        }
     }
 }
 
@@ -224,6 +235,55 @@ function totalList(){
     }
     return obj
 }
+
+function CustomerShoppingList(element){
+    let customerName = element.textContent
+    let customerList =customerNameList()
+    let customer= `<h3 id="customerName">${customerName} Shopping List</h3>`
+    let list = document.getElementById('list')
+    list.innerHTML=''
+    list.innerHTML+=customer
+
+    for(let n = 0; n<customerList.map[customerName].sort.length;n++){
+        let company = customerList.map[customerName].sort[n]
+        let newStringcompany = removeSpecialChar(company)
+        list.innerHTML+=`
+        <div class='companyName'>
+            <span>${company}</span>
+            <button class="delete" onclick='deleteCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
+        </div>
+        `
+        list.innerHTML+=`
+        <div class="result">
+            <div class="listTable ${newStringcompany}">
+                <div class="head">
+                    <div>product</div>
+                    <div>quantity</div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        `
+        for(let l =0 ; l<customerList.map[customerName].map[customerList.map[customerName].sort[n]].product.length; l++){
+            let product = customerList.map[customerName].map[customerList.map[customerName].sort[n]].product[l]
+            let quantity = customerList.map[customerName].map[customerList.map[customerName].sort[n]].quantity[l]
+            
+            let listTable=document.querySelector('.'+newStringcompany)
+            let newStringProduct = removeSpecialChar(product)
+            
+            listTable.innerHTML+= `
+            <div class="productlist ${newStringcompany} ${newStringProduct}">
+                <div></div>
+                <div>${product}</div>
+                <div>${quantity}</div>
+                <button class="edit" onclick='editBtn(this)'>Edit</button>
+                <button class="delete" onclick='deleteTotalBtn(this)'>&#215</button>
+            </div>`
+        }
+    }
+}
+
 function removeSpecialChar(str){
     return str.replace(/[^A-Z0-9]+/ig,'_')
 }
@@ -238,7 +298,7 @@ function deleteTotalBtn(element){
         data = data.filter((el)=> {
             return el.company !== companyName || el.product!== productName
         })
-        createTotalList(customerNameList(),totalList())
+        // createTotalList(customerNameList(),totalList())
     }
     localStorage.setItem('list',JSON.stringify(data))
 }
@@ -253,12 +313,13 @@ function addOpenDetail(element){
         openDetail.splice(index,1)
     }
     OpenDetailBox()
-    console.log(openDetail)
 }
 function OpenDetailBox(){
     for (let i = 0;i<openDetail.length;i++){
         let openDetailBox = document.getElementById(openDetail[i])
         openDetailBox.checked= true
+        console.log(openDetailBox)
+        createNameList()
     }
 }
 
