@@ -10,7 +10,7 @@ function selectFile(){
             const result = JSON.parse(reader.result)
             data =result
             localStorage.setItem('list',JSON.stringify(data))
-            createNameList(customerNameList(),totalList())
+            createNameList()
             totalShoppingList()
         })
         reader.readAsText(file.files[0])
@@ -68,10 +68,8 @@ function textFirstUpper(text){
 readList()
 function readList(){
     data= JSON.parse(localStorage.getItem('list')||'[]')
-    let nameList = customerNameList()
-    let total =totalList()
-    createNameList(nameList,total)
-
+    createNameList()
+    totalShoppingList()
     }
 class ToBuyList{
     constructor (customerName,companyInput,productInput,quantityInput){
@@ -86,10 +84,9 @@ function createList (customerName, companyInput,productInput,quantityInput){
     let storeItems = new ToBuyList(customerName,companyInput,productInput,quantityInput)
     data.push(storeItems)
     localStorage.setItem('list',JSON.stringify(data))
-    
     createNameList()
     totalShoppingList()
-    OpenDetailBox()
+    OpenShoppingList()
 }
 function createNameList(){
     let nameList = customerNameList()
@@ -110,6 +107,8 @@ function createNameList(){
 }
 
 function totalShoppingList(){
+    if(data.length===0) return false
+
     let customer= `<h3 id="customerName">All Shopping List</h3>`
     let list = document.getElementById('list')
     list.innerHTML=''
@@ -240,6 +239,11 @@ function totalList(){
 
 function CustomerShoppingList(element){
     let customerName = element.textContent
+    if(openShoppingList.length>0){
+        openShoppingList.splice(0,1,element)
+    }else{
+        openShoppingList.push(element)
+    }
     let customerList =customerNameList()
     let customer= `<h3 id="customerName">${customerName} Shopping List</h3>`
     let list = document.getElementById('list')
@@ -252,7 +256,7 @@ function CustomerShoppingList(element){
         list.innerHTML+=`
         <div class='companyName'>
             <span>${company}</span>
-            <button class="delete" onclick='deleteCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
+            <button class="delete" onclick='deleteCustomerCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
         </div>
         `
         list.innerHTML+=`
@@ -279,8 +283,8 @@ function CustomerShoppingList(element){
                 <div></div>
                 <div>${product}</div>
                 <div>${quantity}</div>
-                <button class="edit" onclick='editProductBtn(this)'>Edit</button>
-                <button class="delete" onclick='deleteProductBtn(this)'>&#215</button>
+                <button class="edit" onclick='editCustomerProductBtn(this)'>Edit</button>
+                <button class="delete" onclick='deleteCustomerProductBtn(this)'>&#215</button>
             </div>`
         }
     }
@@ -313,6 +317,14 @@ function OpenDetailBox(){
         createNameList()
     }
 }
+function OpenShoppingList(){
+    if(openShoppingList.length===1){
+        CustomerShoppingList(openShoppingList[0])
+    }else{
+        totalShoppingList()
+        OpenDetailBox()
+    }
+}
 
 function deleteCompanyBtn(element){
     let companyName= element.previousElementSibling.textContent 
@@ -323,6 +335,7 @@ function deleteCompanyBtn(element){
         })
         totalShoppingList()
         openDetail=[]
+        createNameList()
     }
     localStorage.setItem('list',JSON.stringify(data))
 }
@@ -342,6 +355,7 @@ function deleteTotalBtn(element){
         }
         totalShoppingList()
         OpenDetailBox()
+        createNameList()
     }
     localStorage.setItem('list',JSON.stringify(data))
 }
@@ -352,8 +366,6 @@ function deleteTotalDetailBtn(element){
     let productName= element.parentNode.parentNode.parentNode.children[1].textContent
     let deleteOpenDetail = element.parentNode.parentNode.parentNode.getAttribute('class').split(' ')[1]
     let checkList = totalList()
-    console.log(checkList.map[companyName].map[productName].customerName.length)
-    console.log(deleteOpenDetail)
     let text = `Do you want to delete this item?`
     
     if(confirm(text)){
@@ -364,13 +376,12 @@ function deleteTotalDetailBtn(element){
             resolve(data)
         }).then(function(){
             if(checkList.map[companyName].map[productName].customerName.length===1){
-                console.log('1111')
                 let index = openDetail.indexOf(deleteOpenDetail)
                 openDetail.splice(index,1)
             }
             totalShoppingList()
             OpenDetailBox()
-            
+            createNameList()
         })
     }
     localStorage.setItem('list',JSON.stringify(data))
@@ -489,13 +500,54 @@ function addBtn(element){
     })
     
 }
-
-function deleteProductBtn(element){
-    console.log(element)
+function deleteCustomerCompanyBtn(element){
+    let customerName = element.parentNode.parentNode.firstElementChild.textContent.split(' ')
+    customerName.splice(-2, 2)
+    customerName = customerName.join(' ')
+    let customerList = customerNameList()
+    let companyName = element.parentNode.firstElementChild.textContent
+    let text = `Do you want to delete all product in ${companyName}?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.customerName !== customerName
+        })
+        if(customerList.map[customerName].sort.length===1){
+            openShoppingList=[]
+        }
+        OpenShoppingList()
+        createNameList()
+        localStorage.setItem('list',JSON.stringify(data))
+    }
+    console.log(openShoppingList)
 }
-function editProductBtn(element){
-    console.log(element)
+
+function deleteCustomerProductBtn(element){
+    let customerName = element.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
+    customerName.splice(-2, 2)
+    customerName = customerName.join(' ')
+    let companyName = element.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
+    let productName = element.parentNode.children[1].textContent
+    let text = `Do you want to delete ${productName}?`
+    if(confirm(text)){
+        data = data.filter((el)=> {
+            return el.company !== companyName || el.product!== productName || el.customerName !== customerName
+        })
+        if(data.filter((el)=>{return el.customerName == customerName}).length==0){
+            openShoppingList=[]
+        }
+        createNameList()
+        OpenShoppingList()
+    }
+    // localStorage.setItem('list',JSON.stringify(data))
+    
+}
+function editCustomerProductBtn(element){
+    let CustomerName = element.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
+    CustomerName.splice(-2, 2)
+    CustomerName = CustomerName.join(' ')
+    console.log(CustomerName)
 }
 console.log(data)
-console.log(customerNameList())
+
+
 console.log(totalList())
