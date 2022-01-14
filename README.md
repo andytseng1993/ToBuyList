@@ -3,3 +3,4 @@
 2. downloadBtn.setAttribute('href','data:' + dataStr)`   
 3. .previousElementSibling
 4. text[0].toUpperCase()+text.slice(1).toLowerCase() : to sure the item name in the same model
+5. event.stopPropagation()

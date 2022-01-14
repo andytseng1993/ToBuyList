@@ -195,7 +195,9 @@ function customerNameList(){
                 mapCompany[list.company].quantity[i]+=list.quantity
             }else{
                mapCompany[list.company].product.push(list.product) 
-               mapCompany[list.company].quantity.push(list.quantity)
+               mapCompany[list.company].product.sort()
+               let n = mapCompany[list.company].product.indexOf(list.product)
+               mapCompany[list.company].quantity.splice(n,0,list.quantity)
             }
         }
     }
@@ -279,14 +281,22 @@ function CustomerShoppingList(element){
             let newStringProduct = removeSpecialChar(product)
             
             listTable.innerHTML+= `
-            <div class="productlist ${newStringcompany} ${newStringProduct}">
-                <div></div>
-                <div>${product}</div>
-                <div>${quantity}</div>
-                <button class="edit" onclick='editCustomerProductBtn(this)'>Edit</button>
-                <button class="delete" onclick='deleteCustomerProductBtn(this)'>&#215</button>
+            <div class="customerProductList ${newStringcompany} ${newStringProduct}">
+                <div class='product'>${product}</div>
+                <div class='quantity'>${quantity}</div>
+                <div class='customerListNav'>
+                    <span class="customerProductedit" ><i class="far fa-edit" onclick='editCustomerProductBtn(event,this)'></i></span>
+                    <span class="customerProductdelete" ><i class="far fa-trash-alt" onclick='deleteCustomerProductBtn(event,this)'></i></span>
+                </div>
+                
             </div>`
         }
+    }
+    let customerNav = document.querySelectorAll('.customerListNav')
+    for(let nav of customerNav){
+        nav.addEventListener('click',function(){
+            nav.classList.toggle('active')
+        })
     }
 }
 
@@ -383,8 +393,8 @@ function deleteTotalDetailBtn(element){
             OpenDetailBox()
             createNameList()
         })
+        localStorage.setItem('list',JSON.stringify(data))
     }
-    localStorage.setItem('list',JSON.stringify(data))
 }
 function editBtn(element){
     let index = element.getAttribute('index')
@@ -500,18 +510,19 @@ function addBtn(element){
     })
     
 }
+
 function deleteCustomerCompanyBtn(element){
     let customerName = element.parentNode.parentNode.firstElementChild.textContent.split(' ')
     customerName.splice(-2, 2)
     customerName = customerName.join(' ')
-    let customerList = customerNameList()
     let companyName = element.parentNode.firstElementChild.textContent
     let text = `Do you want to delete all product in ${companyName}?`
     if(confirm(text)){
         data = data.filter((el)=> {
             return el.company !== companyName || el.customerName !== customerName
         })
-        if(customerList.map[customerName].sort.length===1){
+        let customerList = customerNameList()
+        if(customerList.sort.indexOf(customerName)<0){
             openShoppingList=[]
         }
         OpenShoppingList()
@@ -521,33 +532,99 @@ function deleteCustomerCompanyBtn(element){
     console.log(openShoppingList)
 }
 
-function deleteCustomerProductBtn(element){
-    let customerName = element.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
+function deleteCustomerProductBtn(event,element){
+
+    event.stopPropagation()
+    let customerName = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
     customerName.splice(-2, 2)
     customerName = customerName.join(' ')
-    let companyName = element.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
-    let productName = element.parentNode.children[1].textContent
+    let companyName = element.parentNode.parentNode.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
+    let productName = element.parentNode.parentNode.parentNode.children[0].textContent
     let text = `Do you want to delete ${productName}?`
     if(confirm(text)){
         data = data.filter((el)=> {
             return el.company !== companyName || el.product!== productName || el.customerName !== customerName
         })
-        if(data.filter((el)=>{return el.customerName == customerName}).length==0){
+        let customerList = customerNameList()
+        if(customerList.sort.indexOf(customerName)<0){
             openShoppingList=[]
         }
         createNameList()
         OpenShoppingList()
+        localStorage.setItem('list',JSON.stringify(data))
     }
-    // localStorage.setItem('list',JSON.stringify(data))
     
 }
-function editCustomerProductBtn(element){
-    let CustomerName = element.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
-    CustomerName.splice(-2, 2)
-    CustomerName = CustomerName.join(' ')
-    console.log(CustomerName)
+function editCustomerProductBtn(event,element){
+    event.stopPropagation()
+    let customerName = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
+    customerName.splice(-2, 2)
+    customerName = customerName.join(' ')
+    let product = element.parentNode.parentNode.parentNode.firstElementChild
+    let productName = product.textContent
+    let quantity = element.parentNode.parentNode.previousElementSibling
+    let quantityValue = element.parentNode.parentNode.previousElementSibling.textContent
+    let doneBtn = element.parentNode.nextElementSibling.firstElementChild
+   
+    product.innerHTML=`<input type="text" style='text-align: center;'>`
+    let productSelect = product.firstElementChild
+    productSelect.setAttribute('value',productName)
+    productSelect.focus()
+    quantity.innerHTML=`<input type="number" style='width: 60px; text-align: center;' value='${quantity.textContent}' min= '1'>`
+    
+    element.parentNode.classList.add('editCancel')
+    element.className= 'fas fa-times'
+    element.setAttribute('onclick','cancelCustomerProductEdit()')
+
+    let encode = encodeURI(`${productName}`)
+    doneBtn.className="fas fa-check"
+    doneBtn.parentNode.classList.add('editDone') 
+    doneBtn.setAttribute('onclick',`doneCustomerProductEdit(event,this,'${encode}',${quantityValue})`)
 }
+
+function cancelCustomerProductEdit(){
+    OpenShoppingList()
+}
+
+function doneCustomerProductEdit(event,element,oldproductName,oldQuantity){
+    event.stopPropagation()
+    oldproductName = decodeURI(oldproductName)
+    let customerName = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.firstElementChild.textContent.split(' ')
+    customerName.splice(-2, 2)
+    customerName = customerName.join(' ')
+    let companyName = element.parentNode.parentNode.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.textContent
+    let product = element.parentNode.parentNode.previousElementSibling.previousElementSibling
+    let productName = product.firstElementChild.value
+    let quantity = element.parentNode.parentNode.previousElementSibling
+    let quantityValue = quantity.firstElementChild.valueAsNumber
+    let editBtn = element.parentNode.parentNode.children[0].firstElementChild
+    console.log(editBtn)
+    if(oldQuantity!==quantityValue || oldproductName!== productName){
+        new Promise(function(resolve,reject){
+            data = data.filter((el)=> {
+                return el.company !== companyName || el.product!== oldproductName || el.customerName !== customerName
+            })
+            resolve(data)
+        }).then(function(){
+            let storeItem = new ToBuyList(customerName,companyName,productName,quantityValue)
+            data.push(storeItem)
+        }).then(function(){
+            localStorage.setItem('list',JSON.stringify(data))
+            createNameList()
+            OpenShoppingList()
+        })
+    }else{
+        product.innerHTML=`<div class="product">${oldproductName}</div>`
+        quantity.innerHTML=`<div class="quantity">${oldQuantity}</div>`
+        editBtn.parentNode.classList.remove('editCancel') 
+        editBtn.className ='far fa-edit'
+        editBtn.setAttribute('onclick','editCustomerProductBtn(event,this)')
+        element.parentNode.classList.remove('editDone')
+        element.className = 'far fa-trash-alt'
+        element.setAttribute('onclick','deleteCustomerProductBtn(event,this)')
+    }
+}
+
 console.log(data)
-
-
+console.log(customerNameList())
 console.log(totalList())
