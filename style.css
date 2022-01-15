@@ -11,12 +11,109 @@ body,html{
     padding: 5px 5px;
     border-radius: 5px;
 }
-
+#download{
+    position: absolute;
+    right: 0px;
+    margin: 5px;
+    font-size: 14px;
+    padding: 4px 10px;
+    border: 1px solid #1060b1;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #1060b1;
+}
+#download:hover{
+    background-color: #eee;
+}
+#chooseFile{
+    width: 230px;
+    margin: 5px;
+    font-size: 14px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+#import{
+    margin: 5px;
+    font-size: 12px;
+    padding: 2px 15px;
+    border: 1px solid #1060b1;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #1060b1;
+    background-color: white;
+}
+#import:hover{
+    background-color: #eee;
+}
+.container h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    margin: 10px;
+}
+#myForm{
+    max-width: 600px;
+    margin: 15px auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#myForm div{
+    margin:0px 10px;
+    font-size: 18px;
+}
+#myForm div input{
+    margin: 5px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 2px solid rgba(0, 0, 0,0.4);
+}
+#myForm div input#name{
+    width: 150px;
+}
+#myForm div input#company{
+    width: 150px;
+}
+#myForm div input[type=text]{
+    width: 120px;
+    text-align: center;
+}
+#myForm div input[type=number]{
+    width: 70px;
+    text-align: center;
+}
+.container #myForm input.sub[type="submit"]{
+    font-size: 12px;
+    padding: 4px 14px;
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.container #myForm input.sub[type="submit"]:hover{
+    background-color: #3e8c41;
+}
+#clearAll{
+    font-size: 12px;
+    padding: 4px 14px;
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+}
+#clearAll:hover{
+    background-color: rgb(218, 218, 218);
+}
 #nameBtn{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     list-style-type: none;
     padding: 10px 2px;
     border-top: 1px solid #eee;
@@ -24,11 +121,12 @@ body,html{
     margin: 0;
 }
 #nameBtn li.nameList{
-    padding: 5px 18px;
+    padding: 4px 14px;
     margin-right: 10px;
     background-color: rgb(244, 244, 244);
     border: 1px solid #ccc;
-    border-radius: 10px;
+    font-size: 16px;
+    border-radius: 15px;
     cursor: pointer;
 }
 #nameBtn li.nameList.active{
@@ -108,16 +206,16 @@ body,html{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 5px 10px;
+    padding: 5px 10px 8px;
     border-top: 1px solid #ccc;
 }
 .listTable .productlist .add{
     position: absolute;
-    top: 12px;
+    top: 13px;
     left: 32px;
-    color: rgba(0,0,0,0.3);
+    color: rgba(0,0,0,0.25);
     font-size: 19px;
-    transition: color 0.3s;
+    transition: color 0.2s;
     cursor: pointer;
 }
 .listTable .productlist .add:hover{
@@ -211,7 +309,7 @@ body,html{
 .result .listTable .productlist .detailBtn:checked ~ .detail .customerDetail{
     transition: height 0.7s ,opacity 1s;
     transform: translateY(0px);
-    height: 30px;
+    height: 35px;
     z-index: 0;
     opacity: 1;
 }
@@ -262,15 +360,15 @@ body,html{
     justify-content: center;
     align-items: center;
     right: 8px;
-    width: 25px;
+    width: 20px;
     height: 38px;
-    background-color: #542739;
-    border-radius: 8px;
+    background-color: #76222b;
+    border-radius: 10px;
     transition: 0.5s;
     cursor: pointer;
 }
 .customerListNav:hover{
-    background-color: black;
+    background-color: #542739;
 }
 .customerListNav span{
     position: absolute;
@@ -302,7 +400,7 @@ body,html{
     
 }
 .customerListNav.active:hover{
-    background-color: #542739;
+    background-color: #76222b;
 }
 .customerListNav.active:before{
     content: '';

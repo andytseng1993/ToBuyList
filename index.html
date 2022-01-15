@@ -11,30 +11,30 @@
 </head>
 <body>
     <input type="file" id="chooseFile" accept=".txt">
-    <button id="import" onclick="selectFile()">Import</button>
-    <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download</a>
+    <button id="import" onclick="selectFile()">Import List</button>
+    <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download List</a>
     <section class="container">
+        <h1>To Buy List</h1>
         <form id="myForm">
-            <h1>To Buy List</h1>
-            <div class="msg"></div>
             <div>
-                <label for="name">Ordered Name: </label>
+                <label for="name">Ordered Name : </label>
                 <input type="text" id="name" placeholder="Who ordered?" required>
             </div>
             <div>
-                <label for="company">Company: </label>
+                <label for="company">Company : </label>
                 <input type="text" id="company" placeholder="COMPANY" required>
             </div>
             <div>
-                <label for="product">Product: </label>
+                <label for="product">Product : </label>
                 <input type="text" id="product" placeholder="PRODUCT" required>
             </div>
             <div>
-                <label for="quantity">Quantity: </label>
+                <label for="quantity">Quantity : </label>
                 <input type="number" id="quantity" placeholder="QTY" min="1" required>
-            </div>
-            <input class="btn" type="submit" value="Submit">
+            </div> 
+            <input class="sub" type="submit" value="Submit">
             <button type="button" id="clearAll">Clean All</button>
+            <div class="msg"></div>
         </form>
     </section>
     <section>

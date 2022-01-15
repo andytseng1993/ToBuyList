@@ -38,6 +38,7 @@ let companyInput = document.getElementById('company')
 let productInput = document.getElementById('product')
 let quantityInput= document.getElementById('quantity')
 let result = document.getElementById('result')
+let clear = document.getElementById('clearAll')
 
 form.addEventListener('submit',function(event){
     event.preventDefault()
@@ -58,6 +59,12 @@ form.addEventListener('submit',function(event){
             msg.className= 'msg'
         },2000)
     }
+})
+clear.addEventListener('click',function(){
+    customerName.value = ''
+    companyInput.value=''
+    productInput.value=''
+    quantityInput.value=''
 })
 
 function textFirstUpper(text){
