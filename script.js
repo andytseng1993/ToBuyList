@@ -89,21 +89,29 @@ function createList (customerName, companyInput,productInput,quantityInput){
     OpenShoppingList()
 }
 function createNameList(){
-    let nameList = customerNameList()
+    let customerList = customerNameList()
     let total =totalList()
     if(total.sort.length > 0){
         let nameBtn = document.getElementById('nameBtn')
-        // nameBtn.innerHTML='<label><input type="radio" class="nameBtn active" name="nameBtn" onclick="totalShoppingList()" checked>total</label>'
-        nameBtn.innerHTML='<button index=0 class="nameBtn active" onclick="totalShoppingList()"> Total</button>'
-        for(let n=0;n<nameList.sort.length;n++){
-            // nameBtn.innerHTML+= `<label><input type="radio" name="nameBtn" class="nameBtn">${nameList.sort[n]}</label>`
-            nameBtn.innerHTML+= `<button index='${n+1}' class="nameBtn" onclick="CustomerShoppingList(this)">${nameList.sort[n]}</button>`
+        nameBtn.innerHTML='<li class="nameList active" onclick="totalShoppingList()"> Total</li>'
+        for(let n=0;n<customerList.sort.length;n++){
+            nameBtn.innerHTML+= `<li class="nameList" onclick="CustomerShoppingList(this)">${customerList.sort[n]}</li>`
         }
-        
+        let nameList = document.querySelectorAll('.nameList')
+        nameList.forEach((item)=>{
+            item.addEventListener('click',function(){
+                nameList.forEach((item)=>{
+                    item.classList.remove('active')
+                    this.classList.add('active')
+                })
+            })
+        })
     }else{
         nameBtn.innerHTML='Please submit the form :)'
+        let list = document.getElementById('list')
         list.innerHTML=''
     }
+    
 }
 
 function totalShoppingList(){
@@ -142,7 +150,8 @@ function totalShoppingList(){
             let number = total.map[company].map[product].quantity.reduce((pre,cur)=>pre+cur,0)
             listTable.innerHTML+= `
             <div class="productlist ${newStringcompany+newStringProduct}">
-                <button class="add" onclick='addBtn(this)'>+add</button>
+                <i class="fa-solid fa-circle-plus add" onclick='addBtn(this)'></i>
+                
                 <div>${product}</div>
                 <div>${number}</div>
                 <input type="checkbox" class="detailBtn" id="${newStringcompany+newStringProduct}" onclick='addOpenDetail(this)'>
@@ -258,7 +267,8 @@ function CustomerShoppingList(element){
         list.innerHTML+=`
         <div class='companyName'>
             <span>${company}</span>
-            <button class="delete" onclick='deleteCustomerCompanyBtn(this)' company='${newStringcompany}'>&#215</button>
+            <i class="fa-solid fa-trash-can deleteCustomerCompany" onclick='deleteCustomerCompanyBtn(this)'></i>
+            
         </div>
         `
         list.innerHTML+=`
@@ -285,19 +295,19 @@ function CustomerShoppingList(element){
                 <div class='product'>${product}</div>
                 <div class='quantity'>${quantity}</div>
                 <div class='customerListNav'>
-                    <span class="customerProductedit" ><i class="far fa-edit" onclick='editCustomerProductBtn(event,this)'></i></span>
-                    <span class="customerProductdelete" ><i class="far fa-trash-alt" onclick='deleteCustomerProductBtn(event,this)'></i></span>
+                    <span class="customerProductedit" ></i><i class="fa-solid fa-pen-to-square" onclick='editCustomerProductBtn(event,this)'></i></span>
+                    <span class="customerProductdelete" ><i class="fa-solid fa-trash-can" onclick='deleteCustomerProductBtn(event,this)'></i></span>
                 </div>
                 
             </div>`
         }
     }
     let customerNav = document.querySelectorAll('.customerListNav')
-    for(let nav of customerNav){
+    customerNav.forEach((nav)=>{
         nav.addEventListener('click',function(){
             nav.classList.toggle('active')
         })
-    }
+    })
 }
 
 function removeSpecialChar(str){
@@ -573,11 +583,11 @@ function editCustomerProductBtn(event,element){
     quantity.innerHTML=`<input type="number" style='width: 60px; text-align: center;' value='${quantity.textContent}' min= '1'>`
     
     element.parentNode.classList.add('editCancel')
-    element.className= 'fas fa-times'
+    element.className= 'fa-solid fa-xmark'
     element.setAttribute('onclick','cancelCustomerProductEdit()')
 
     let encode = encodeURI(`${productName}`)
-    doneBtn.className="fas fa-check"
+    doneBtn.className="fa-solid fa-check"
     doneBtn.parentNode.classList.add('editDone') 
     doneBtn.setAttribute('onclick',`doneCustomerProductEdit(event,this,'${encode}',${quantityValue})`)
 }
@@ -617,10 +627,10 @@ function doneCustomerProductEdit(event,element,oldproductName,oldQuantity){
         product.innerHTML=`<div class="product">${oldproductName}</div>`
         quantity.innerHTML=`<div class="quantity">${oldQuantity}</div>`
         editBtn.parentNode.classList.remove('editCancel') 
-        editBtn.className ='far fa-edit'
+        editBtn.className ='fa-solid fa-pen-to-square'
         editBtn.setAttribute('onclick','editCustomerProductBtn(event,this)')
         element.parentNode.classList.remove('editDone')
-        element.className = 'far fa-trash-alt'
+        element.className = 'fa-solid fa-trash-can'
         element.setAttribute('onclick','deleteCustomerProductBtn(event,this)')
     }
 }

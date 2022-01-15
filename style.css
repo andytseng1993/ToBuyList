@@ -23,18 +23,31 @@ body,html{
     border-bottom: 1px solid #eee;
     margin: 0;
 }
-#nameBtn li{
-    padding: 7px 25px;
+#nameBtn li.nameList{
+    padding: 5px 18px;
     margin-right: 10px;
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(244, 244, 244);
     border: 1px solid #ccc;
-    border-radius: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+#nameBtn li.nameList.active{
+    background-color: rgb(148, 148, 148);
+    color: white;
+}
+#nameBtn li.nameList:hover{
+    background-color: rgb(148, 148, 148);
+    color: white;
+}
+#nameBtn li.nameList:active{
+    transform: translate(1px,1px);
 }
 #list{
 
     max-width: 1000px;
     margin: 25px auto ;
-    background-color: rgb(245, 245, 245);
+    background-color: rgb(238, 238, 238);
+    border-radius: 5px;
 }
 #customerName{
     padding: 10px 20px;
@@ -45,7 +58,7 @@ body,html{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 18px;
+    font-size: 22px;
     padding: 10px 30px;
     margin: 0;
     background-color: rgb(244, 137, 137);
@@ -71,12 +84,12 @@ body,html{
 }
 .listTable .head div:nth-child(4n+1){
     display: flex;
-    flex-basis: 63%;
+    flex-basis: 64%;
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+2){
     display: flex;
-    flex-basis: 17%;
+    flex-basis: 18%;
     justify-content: center;
 }
 .listTable .head div:nth-child(4n+3){
@@ -95,14 +108,21 @@ body,html{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 3px 10px;
+    padding: 5px 10px;
     border-top: 1px solid #ccc;
 }
 .listTable .productlist .add{
     position: absolute;
-    top: 5px;
-    left: 25px;
-    padding: 5px;
+    top: 12px;
+    left: 32px;
+    color: rgba(0,0,0,0.3);
+    font-size: 19px;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+.listTable .productlist .add:hover{
+    transition: color 0.2s;
+    color: rgba(0,0,0,0.45);
 }
 .listTable .productlist > div:nth-child(3n+2){
     display: flex;
@@ -172,15 +192,17 @@ body,html{
     flex-basis: 100%;
     background-color: white;
     justify-content: center;
+    border-radius: 5px;
+}
+.result .listTable .productlist .detail> div:nth-child(2n){
+    background-color: rgb(250, 250, 250);
 }
 
 .result .listTable .productlist .detail .customerDetail{
     height:0px;
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
-    color: #555;
     transform: translateY(-10px);
     z-index: -10;
     transition: height 0.5s ,opacity 1s;
@@ -188,7 +210,6 @@ body,html{
 }
 .result .listTable .productlist .detailBtn:checked ~ .detail .customerDetail{
     transition: height 0.7s ,opacity 1s;
-    transition-delay: opacity 0.5s;
     transform: translateY(0px);
     height: 30px;
     z-index: 0;
@@ -248,6 +269,9 @@ body,html{
     transition: 0.5s;
     cursor: pointer;
 }
+.customerListNav:hover{
+    background-color: black;
+}
 .customerListNav span{
     position: absolute;
     width: 5px;
@@ -265,14 +289,31 @@ body,html{
 .customerListNav span:nth-child(2){
     transform: translateY(7px);
 }
+.customerListNav:before{
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 30px;
+    background-color: #FF5F57;
+    left: 0px;
+    border-radius: 10px 0px 0px 10px;
+    transition: 0.5s;
+    opacity: 0;
+    
+}
+.customerListNav.active:hover{
+    background-color: #542739;
+}
 .customerListNav.active:before{
     content: '';
+    opacity: 1;
     position: absolute;
     width: 14px;
     height: 38px;
     background-color: #FF5F57;
     left: 0;
     border-radius: 7px 0px 0px 7px;
+    transition: 0.5s;
 }
 .customerListNav.active::after{
     content: '';
@@ -324,6 +365,26 @@ body,html{
     background-color:turquoise;
 }
 
+.deleteCustomerCompany{
+    flex-basis: 7%;
+    font-size: 16px;
+    padding: 4px;
+    margin: 3px;
+    text-align: center;
+    cursor: pointer;
+    background-color:whitesmoke;
+    border-radius: 7px;
+    transition: transform 0.3s;
+}
+.deleteCustomerCompany:hover{
+    transform: translateY(-1px);
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+}
+.deleteCustomerCompany:active{
+    transform:translate(0px,1px);
+    transition: 0.1s;
+}
 /* .result table{
     position: relative;
     margin-top: 10px;
