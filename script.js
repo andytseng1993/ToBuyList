@@ -2,6 +2,43 @@
 let data = []
 let openShoppingList = []
 let openDetail = []
+let openInputForm = document.querySelector('.container')
+
+
+let openBtn = document.getElementById('openBtn')
+let closeBtn = document.getElementById('closeBtn')
+openBtn.addEventListener('click',function(){
+    openInputForm.classList.toggle('open')
+    openBtn.classList.toggle('openInput')
+    closeBtn.classList.toggle('closeInput')
+})
+closeBtn.addEventListener('click',function(){
+    openInputForm.classList.toggle('open')
+    openBtn.classList.toggle('openInput')
+    closeBtn.classList.toggle('closeInput')
+})
+let scrollUp = document.getElementById('scrollUp')
+document.addEventListener('scroll',function(){
+    if(scrollY<250){
+        scrollUp.style.display='none'
+    }else{
+        scrollUp.style.display='flex'       
+    }
+})
+scrollUp.addEventListener('click',function(){
+    let callback  = ()=>{
+        if(document.documentElement.scrollTop===0){
+            return
+        }else{
+            let speed = 40
+            document.documentElement.scrollTop-=speed
+            requestAnimationFrame(callback)
+        }
+    }
+    requestAnimationFrame(callback)
+    
+})
+
 function selectFile(){
     let file = document.getElementById('chooseFile')
     let reader = new FileReader()
@@ -29,6 +66,7 @@ function saveFile(){
         downloadBtn.setAttribute('href','data:' + dataStr)
     } 
 }
+
 
 // Input List
 let form = document.getElementById('myForm')

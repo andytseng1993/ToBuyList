@@ -10,11 +10,10 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <input type="file" id="chooseFile" accept=".txt">
-    <button id="import" onclick="selectFile()">Import List</button>
-    <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download List</a>
+    
     <section class="container">
-        <h1>To Buy List</h1>
+        <i class="fa-solid fa-square-plus openInput" id="openBtn"></i>
+        <i class="fa-solid fa-square-minus" id="closeBtn"></i>
         <form id="myForm">
             <div>
                 <label for="name">Ordered Name : </label>
@@ -32,12 +31,20 @@
                 <label for="quantity">Quantity : </label>
                 <input type="number" id="quantity" placeholder="QTY" min="1" required>
             </div> 
-            <input class="sub" type="submit" value="Submit">
-            <button type="button" id="clearAll">Clean All</button>
             <div class="msg"></div>
+            <div class="subBtn">
+                <button type="button" id="clearAll">Clean All</button>
+                <input class="sub" type="submit" value="Submit">
+            </div>
         </form>
+        <div class="upload">
+            <input type="file" id="chooseFile" accept=".txt">
+            <button id="import" onclick="selectFile()">Import List</button>
+        </div>
+        <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download List</a>
     </section>
     <section>
+        <h1>To Buy List</h1>
         <div>
             <div>
                 <ul  id="nameBtn">
@@ -46,6 +53,8 @@
             </div>
             <div id="list"></div>
         </div>
+
+        <div id="scrollUp"><i class="fa-solid fa-angles-up"></i></div>
     </section>
         
 
