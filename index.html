@@ -12,12 +12,12 @@
 <body>
     
     <section class="container">
-        <i class="fa-solid fa-square-plus openInput" id="openBtn"></i>
+        <i class="fa-solid fa-square-plus btn openInput" id="openBtn"></i>
         <i class="fa-solid fa-square-minus" id="closeBtn"></i>
         <form id="myForm">
             <div>
                 <label for="name">Ordered Name : </label>
-                <input type="text" id="name" placeholder="Who ordered?" required>
+                <input type="text" id="name" placeholder="NAME" required>
             </div>
             <div>
                 <label for="company">Company : </label>
@@ -43,8 +43,8 @@
         </div>
         <a id="download" download="ToBuyList.txt" onclick="saveFile()">Download List</a>
     </section>
-    <section>
-        <h1>To Buy List</h1>
+    <section class="container2">
+        <h1>To Buy List <i class="fa-solid fa-bag-shopping"></i></h1>
         <div>
             <div>
                 <ul  id="nameBtn">
@@ -55,6 +55,7 @@
         </div>
 
         <div id="scrollUp"><i class="fa-solid fa-angles-up"></i></div>
+        <footer></footer>
     </section>
         
 

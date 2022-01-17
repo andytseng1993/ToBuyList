@@ -3,10 +3,15 @@ let data = []
 let openShoppingList = []
 let openDetail = []
 let openInputForm = document.querySelector('.container')
-
-
 let openBtn = document.getElementById('openBtn')
 let closeBtn = document.getElementById('closeBtn')
+let section2= document.querySelector('.container2')
+
+section2.addEventListener('click',function(){
+    openInputForm.classList.remove('open')
+    openBtn.classList.add('openInput')
+    closeBtn.classList.remove('closeInput')
+})
 openBtn.addEventListener('click',function(){
     openInputForm.classList.toggle('open')
     openBtn.classList.toggle('openInput')
@@ -19,7 +24,7 @@ closeBtn.addEventListener('click',function(){
 })
 let scrollUp = document.getElementById('scrollUp')
 document.addEventListener('scroll',function(){
-    if(scrollY<250){
+    if(scrollY< 200){
         scrollUp.style.display='none'
     }else{
         scrollUp.style.display='flex'       
@@ -152,7 +157,7 @@ function createNameList(){
             })
         })
     }else{
-        nameBtn.innerHTML='Please submit the form :)'
+        nameBtn.innerHTML='<h3>Please click <i class="fa-solid fa-square-plus"></i> and submit the form <i class="fa-regular fa-face-smile-beam"></i></h3>'
         let list = document.getElementById('list')
         list.innerHTML=''
     }
@@ -383,8 +388,16 @@ function OpenDetailBox(){
     }
 }
 function OpenShoppingList(){
+    console.log(openShoppingList)
     if(openShoppingList.length===1){
         CustomerShoppingList(openShoppingList[0])
+        let customerNameNav = document.querySelectorAll('.nameList')
+        customerNameNav.forEach((nav)=>{
+            nav.classList.remove('active')
+            if(nav.textContent===openShoppingList[0].textContent){
+                nav.classList.add('active')
+            }
+        })
     }else{
         totalShoppingList()
         OpenDetailBox()
@@ -580,11 +593,10 @@ function deleteCustomerCompanyBtn(element){
         if(customerList.sort.indexOf(customerName)<0){
             openShoppingList=[]
         }
-        OpenShoppingList()
         createNameList()
+        OpenShoppingList()
         localStorage.setItem('list',JSON.stringify(data))
     }
-    console.log(openShoppingList)
 }
 
 function deleteCustomerProductBtn(event,element){
@@ -653,7 +665,6 @@ function doneCustomerProductEdit(event,element,oldproductName,oldQuantity){
     let quantity = element.parentNode.parentNode.previousElementSibling
     let quantityValue = quantity.firstElementChild.valueAsNumber
     let editBtn = element.parentNode.parentNode.children[0].firstElementChild
-    console.log(editBtn)
     if(oldQuantity!==quantityValue || oldproductName!== productName){
         new Promise(function(resolve,reject){
             data = data.filter((el)=> {
@@ -680,6 +691,3 @@ function doneCustomerProductEdit(event,element,oldproductName,oldQuantity){
     }
 }
 
-console.log(data)
-console.log(customerNameList())
-console.log(totalList())
