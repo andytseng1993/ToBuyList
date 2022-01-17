@@ -333,6 +333,7 @@ section h1{
     display: flex;
     flex-basis: 63%;
     justify-content: center;
+    font-weight: 600;
 }
 .listTable .productlist > div:nth-child(3n+3){
     display: flex;
