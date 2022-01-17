@@ -377,9 +377,6 @@ function addOpenDetail(element){
     }
     OpenDetailBox()
 }
-function deleteOpenDetail(element){
-
-}
 function OpenDetailBox(){
     for (let i = 0;i<openDetail.length;i++){
         let openDetailBox = document.getElementById(openDetail[i])
@@ -403,7 +400,6 @@ function OpenShoppingList(){
         OpenDetailBox()
     }
 }
-
 function deleteCompanyBtn(element){
     let companyName= element.previousElementSibling.textContent 
     let text = `Do you want to delete all product in ${companyName}?`
