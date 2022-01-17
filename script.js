@@ -136,7 +136,8 @@ function createList (customerName, companyInput,productInput,quantityInput){
     localStorage.setItem('list',JSON.stringify(data))
     createNameList()
     totalShoppingList()
-    OpenShoppingList()
+    openShoppingList=[]
+    OpenDetailBox()
 }
 function createNameList(){
     let customerList = customerNameList()
@@ -385,7 +386,6 @@ function OpenDetailBox(){
     }
 }
 function OpenShoppingList(){
-    console.log(openShoppingList)
     if(openShoppingList.length===1){
         CustomerShoppingList(openShoppingList[0])
         let customerNameNav = document.querySelectorAll('.nameList')
